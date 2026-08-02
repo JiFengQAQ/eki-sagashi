@@ -14,12 +14,12 @@ class TestKinjo:
         return classify(name, self.rules, self.orders)
 
     def test_tokyo_inside(self):
-        for name in ['新宿', '東京', '宇都宮', '黒磯', '大宮', '横浜', '千葉', '高崎',
+        for name in ['新宿', '東京', '宇都宮', '黒磯', '那須塩原', '大宮', '横浜', '千葉', '高崎',
                      '長野', '白馬', '水戸', '銚子', '熱海', '伊東']:
             assert '東京' in self.in_regions(name), f'{name} 应在東京近郊区間'
 
     def test_tokyo_outside(self):
-        for name in ['那須塩原', '南小谷', '函館', '鹿児島中央', '札幌', '新潟', '仙台',
+        for name in ['高久', '白河', '南小谷', '函館', '鹿児島中央', '札幌', '新潟', '仙台',
                      '金沢', '福井', '新宿御苑前']:
             assert '東京' not in self.in_regions(name), f'{name} 不应在東京近郊区間'
 
