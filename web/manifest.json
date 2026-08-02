@@ -1,0 +1,16 @@
+{
+  "name": "駅さがし — 全国の鉄道駅をすばやく検索",
+  "short_name": "駅さがし",
+  "description": "全国8,700以上の鉄道駅を駅名・かな・ローマ字・漢字で即検索。乗降人員順の候補表示。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f7f5",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
