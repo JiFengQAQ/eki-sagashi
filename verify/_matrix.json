@@ -1,0 +1,682 @@
+{
+ "1110615": {
+  "name": "東鹿越",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": false,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false,
+   "kanji_4": null
+  }
+ },
+ "1120308": {
+  "name": "金谷沢",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false,
+   "kanji_4": null
+  }
+ },
+ "1121202": {
+  "name": "東大更",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": false,
+   "kana_4": false,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ },
+ "1130507": {
+  "name": "新座",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null,
+   "kana_4": null
+  }
+ },
+ "1130602": {
+  "name": "大口",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1130612": {
+  "name": "古淵",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null,
+   "kana_4": null
+  }
+ },
+ "1131142": {
+  "name": "すずらんの里",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kanji_4": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true
+  }
+ },
+ "1131328": {
+  "name": "本八幡",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": true,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": true,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ },
+ "1131902": {
+  "name": "尾久",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "roma_1": false,
+   "roma_2": true,
+   "roma_3": true,
+   "kanji_3": null,
+   "kana_3": null,
+   "kanji_4": null,
+   "kana_4": null,
+   "roma_4": null
+  }
+ },
+ "1131927": {
+  "name": "蒲須坂",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ },
+ "1132523": {
+  "name": "那古船形",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kanji_4": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true
+  }
+ },
+ "1133011": {
+  "name": "久留里",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true,
+   "kanji_4": null,
+   "kana_4": null
+  }
+ },
+ "1134104": {
+  "name": "新前橋",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false,
+   "kanji_4": null
+  }
+ },
+ "1140412": {
+  "name": "柏崎",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1140418": {
+  "name": "塚山",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1140906": {
+  "name": "一日市場",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kanji_4": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true
+  }
+ },
+ "1140909": {
+  "name": "豊科",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1141137": {
+  "name": "贄川",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1160308": {
+  "name": "甲南山手",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kanji_4": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true
+  }
+ },
+ "1160904": {
+  "name": "竜野",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null,
+   "kana_4": null
+  }
+ },
+ "1161010": {
+  "name": "里庄",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1162602": {
+  "name": "美章園",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": true,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": true,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ },
+ "1163626": {
+  "name": "粉河",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null,
+   "kana_4": null
+  }
+ },
+ "1170306": {
+  "name": "清音",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1172002": {
+  "name": "備後本庄",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kanji_4": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true
+  }
+ },
+ "1180310": {
+  "name": "鴨島",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1190220": {
+  "name": "東郷",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1190521": {
+  "name": "小長井",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ },
+ "1190535": {
+  "name": "本川内",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ },
+ "1190913": {
+  "name": "福吉",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "1191502": {
+  "name": "上三緒",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false,
+   "kanji_4": null
+  }
+ },
+ "9931211": {
+  "name": "小中",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_3": null,
+   "kanji_4": null,
+   "kana_4": null
+  }
+ },
+ "9931406": {
+  "name": "飯田岡",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": true,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ },
+ "9931507": {
+  "name": "金上",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false,
+   "kanji_3": null,
+   "kanji_4": null
+  }
+ },
+ "9952526": {
+  "name": "郡上八幡",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kanji_4": true,
+   "kana_1": true,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": true,
+   "roma_3": true,
+   "roma_4": true
+  }
+ },
+ "9952815": {
+  "name": "西藤原",
+  "checked": {
+   "kanji_1": false,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": false,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ },
+ "9963707": {
+  "name": "須磨浦公園",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kanji_4": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true
+  }
+ },
+ "9971415": {
+  "name": "舟入町",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ },
+ "9971803": {
+  "name": "守内かさ神",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kanji_4": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": false,
+   "roma_4": false
+  }
+ },
+ "9981721": {
+  "name": "文珠通",
+  "checked": {
+   "kanji_1": true,
+   "kanji_2": true,
+   "kanji_3": true,
+   "kana_1": false,
+   "kana_2": true,
+   "kana_3": true,
+   "kana_4": true,
+   "roma_1": false,
+   "roma_2": false,
+   "roma_3": true,
+   "roma_4": true,
+   "kanji_4": null
+  }
+ }
+}
