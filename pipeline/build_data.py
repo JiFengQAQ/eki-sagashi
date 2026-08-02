@@ -120,6 +120,11 @@ def build():
         json.dump(meta, f, ensure_ascii=False, indent=1)
     with open(os.path.join(DATA_DIR, 'canon.json'), 'w', encoding='utf-8') as f:
         json.dump(canon, f, ensure_ascii=False, separators=(',', ':'))
+    # web/ 部署副本
+    web_dir = os.path.join(REPO_ROOT, 'web')
+    for fn in ('stations.json', 'canon.json'):
+        import shutil
+        shutil.copy(os.path.join(DATA_DIR, fn), os.path.join(web_dir, fn))
     print(f"stations: {len(stations)}  kana: {kana_ok}  roma: {roma_ok}  rid: {with_val}  "
           f"line_color: {line_colored}/{line_total}  bytes: {len(raw)}  {time.time()-t0:.1f}s")
 

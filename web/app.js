@@ -91,7 +91,7 @@ import { buildIndex, search } from './search.js';
         `<span class="result-sub">${escapeHtml(st.kana)}<span class="sep">·</span>${escapeHtml(stationSub(st))}${more ? more : ''}</span>` +
         `</span>` +
         renderRidBadge(st);
-      li.addEventListener('mousedown', (e) => { e.preventDefault(); openDetail(st); });
+      li.addEventListener('click', () => { openDetail(st); });
       resultsEl.appendChild(li);
     });
   }
