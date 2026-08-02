@@ -26,9 +26,35 @@ def build():
     rid = join_ridership(s12)
     kana = build_kana(eki['stations'])
 
+    # canon.json: 站名/线路字符集 + JP_MAP键 + 简繁体两侧 的 canonical 映射(前端JS查表用)
+    from normalize import JP_MAP, canonical_kanji, _KANJI_RE, _s2t
+    chars = set(JP_MAP.keys())
+    for st in eki['stations']:
+        chars.update(st['name'])
+        for l in st['lines']:
+            chars.update(l['name'])
+    chars.update(st['pref'] for st in eki['stations'])
+    chars.update(st['muni'] for st in eki['stations'])
+    # 简体/繁体查询侧: 对每个数据字符补 s2t/t2s 变体
+    from normalize import _t2s
+    extra = set()
+    for c in list(chars):
+        if _KANJI_RE.match(c):
+            extra.add(_s2t.convert(c))
+            extra.add(_t2s.convert(c))
+    chars |= extra
+    canon = {}
+    for c in chars:
+        if c in ('々', 'ヶ', 'ケ', 'ヵ'):
+            continue
+        if _KANJI_RE.match(c):
+            canon[c] = canonical_kanji(c)
+        else:
+            canon[c] = c
+
     stations = []
     for st in eki['stations']:
-        k, r = kana[st['id']]
+        k, r, r_ou = kana[st['id']]
         rid_info = rid.get(st['id'], {'rid': {'v': None, 'y': None}, 'per': []})
         lines = [{'n': l['name'], 'c': l.get('color')} for l in st['lines']]
         rec = {
@@ -36,6 +62,7 @@ def build():
             'name': st['name'],
             'kana': k,
             'roma': r,
+            'roma_ou': r_ou,
             'pref': st['pref'],
             'muni': st['muni'],
             'ward': st.get('ward', ''),
@@ -91,6 +118,8 @@ def build():
         f.write(raw)
     with open(os.path.join(DATA_DIR, 'meta.json'), 'w', encoding='utf-8') as f:
         json.dump(meta, f, ensure_ascii=False, indent=1)
+    with open(os.path.join(DATA_DIR, 'canon.json'), 'w', encoding='utf-8') as f:
+        json.dump(canon, f, ensure_ascii=False, separators=(',', ':'))
     print(f"stations: {len(stations)}  kana: {kana_ok}  roma: {roma_ok}  rid: {with_val}  "
           f"line_color: {line_colored}/{line_total}  bytes: {len(raw)}  {time.time()-t0:.1f}s")
 

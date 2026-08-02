@@ -1,0 +1,126 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const dataDir = join(__dirname, '../../data');
+const stations = JSON.parse(readFileSync(join(dataDir, 'stations.json'), 'utf-8'));
+const canon = JSON.parse(readFileSync(join(dataDir, 'canon.json'), 'utf-8'));
+
+const { normalizeQuery, buildIndex, search } = await import('../search.js');
+
+const idx = buildIndex(stations, canon);
+
+test('normalize: kanji', () => {
+  assert.equal(normalizeQuery('新宿', canon), '新宿');
+  assert.equal(normalizeQuery('新宿駅', canon), '新宿');
+  assert.equal(normalizeQuery('涩谷', canon), '渋谷');
+  assert.equal(normalizeQuery('新桥', canon), '新橋');
+  assert.equal(normalizeQuery('东京', canon), '東京');
+  assert.equal(normalizeQuery('横滨', canon), '横浜');
+  assert.equal(normalizeQuery('市ケ谷', canon), '市ヶ谷');
+  assert.equal(normalizeQuery('代々木', canon), '代代木');
+});
+
+test('normalize: kana', () => {
+  assert.equal(normalizeQuery('しんじゅく', canon), 'しんじゅく');
+  assert.equal(normalizeQuery('シンジュク', canon), 'しんじゅく');
+  assert.equal(normalizeQuery('トーキョー', canon), 'とうきょう');
+});
+
+test('normalize: romaji', () => {
+  assert.equal(normalizeQuery('Shinjuku', canon), 'shinjuku');
+  assert.equal(normalizeQuery('Tōkyō', canon), 'tokyo');
+  assert.equal(normalizeQuery('toukyou', canon), 'toukyou');
+  assert.equal(normalizeQuery('Shin-Koyasu', canon), 'shinkoyasu');
+  assert.equal(normalizeQuery('Ōsaka', canon), 'osaka');
+});
+
+test('search: kana finds station', () => {
+  const r = search(idx, 'しんじゅく', 10);
+  assert.ok(r.some(s => s.name === '新宿'));
+});
+
+test('search: katakana same as hiragana', () => {
+  const a = search(idx, 'シンジュク', 10).map(s => s.id);
+  const b = search(idx, 'しんじゅく', 10).map(s => s.id);
+  assert.deepEqual(a, b);
+});
+
+test('search: romaji finds station', () => {
+  const r = search(idx, 'shinjuku', 10);
+  assert.ok(r.some(s => s.name === '新宿'));
+  const r2 = search(idx, 'tokyo', 10);
+  assert.ok(r2.some(s => s.name === '東京'));
+});
+
+test('search: ou variant', () => {
+  const r = search(idx, 'toukyou', 10);
+  assert.ok(r.some(s => s.name === '東京'));
+});
+
+test('search: macron stripped input', () => {
+  const r = search(idx, 'Tōkyō', 10);
+  assert.ok(r.some(s => s.name === '東京'));
+});
+
+test('search: simplified chinese', () => {
+  const r = search(idx, '涩谷', 10);
+  assert.ok(r.some(s => s.name === '渋谷'));
+  const r2 = search(idx, '新桥', 10);
+  assert.ok(r2.some(s => s.name === '新橋'));
+});
+
+test('search: prefix length 1', () => {
+  const r = search(idx, '新', 50);
+  assert.ok(r.some(s => s.name === '新宿'));
+  const rk = search(idx, 'し', 50);
+  assert.ok(rk.some(s => s.name === '新宿'));
+  const rr = search(idx, 's', 50);
+  assert.ok(rr.some(s => s.name === '新宿'));
+});
+
+test('search: prefix length 2', () => {
+  const r = search(idx, '新宿', 10);
+  assert.ok(r.some(s => s.name === '新宿'));
+});
+
+test('search: sorted by ridership desc', () => {
+  const r = search(idx, 'しん', 20);
+  assert.equal(r[0].name, '新宿'); // 新宿 rid 1,578,732 最大
+  const vals = r.map(s => s.rid?.v ?? -1);
+  for (let i = 1; i < vals.length; i++) {
+    assert.ok(vals[i - 1] >= vals[i]);
+  }
+});
+
+test('search: no-data stations sort last', () => {
+  const r = search(idx, 'しん', 100);
+  const noData = r.filter(s => !s.rid?.v);
+  const withData = r.filter(s => s.rid?.v);
+  if (noData.length && withData.length) {
+    assert.ok(r.indexOf(noData[0]) > r.indexOf(withData[withData.length - 1]));
+  }
+});
+
+test('search: empty query returns empty', () => {
+  assert.deepEqual(search(idx, '', 10), []);
+  assert.deepEqual(search(idx, '   ', 10), []);
+});
+
+test('search: limit respected', () => {
+  const r = search(idx, 'し', 5);
+  assert.ok(r.length <= 5);
+});
+
+test('search: station suffix in query', () => {
+  const r = search(idx, '新宿駅', 10);
+  assert.ok(r.some(s => s.name === '新宿'));
+});
+
+test('search: 大宮 romaji', () => {
+  const r = search(idx, 'omiya', 10);
+  assert.ok(r.some(s => s.name === '大宮'));
+});

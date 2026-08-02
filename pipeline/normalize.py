@@ -6,6 +6,7 @@ import unicodedata
 from opencc import OpenCC
 
 _s2t = OpenCC('s2t')
+_t2s = OpenCC('t2s')
 
 # 旧字体/繁体/简体 -> 日本新字体(或日本惯用形)
 JP_MAP = {

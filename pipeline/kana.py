@@ -5,7 +5,7 @@ import os
 
 import pykakasi
 
-from normalize import canonical_kanji, norm_kana, norm_roma, norm_station_name
+from normalize import canonical_kanji, norm_kana, norm_roma, norm_station_name, roma_variants
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -105,7 +105,7 @@ def _pykakasi_roma(text):
 
 
 def build_kana(stations, wd=None, osm=None):
-    """每站返回(id -> (kana, romaji)); 优先级: OSM > Wikidata > pykakasi(+例外);
+    """每站返回(id -> (kana, romaji, romaji_ou)); 优先级: OSM > Wikidata > pykakasi(+例外);
     查找键用canonical_kanji(ケ->ヶ、々展开), 与WD/OSM表记统一"""
     if wd is None:
         wd = load_wd_kana()
@@ -127,5 +127,11 @@ def build_kana(stations, wd=None, osm=None):
             roma = os_entry[1]
         else:
             roma = _pykakasi_roma(name)
-        result[st['id']] = (kana, roma)
+        # ou形变体: 基于 pykakasi 原始 hepburn(含长音符号) 生成, 不受OSM无长音影响
+        roma_ou = roma_variants(_pykakasi_roma_raw(name))[-1]
+        result[st['id']] = (kana, roma, roma_ou)
     return result
+
+
+def _pykakasi_roma_raw(text):
+    return ''.join(item['hepburn'] for item in _pykakasi().convert(text))
