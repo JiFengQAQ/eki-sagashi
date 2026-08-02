@@ -91,6 +91,11 @@ LINE_GROUP = {
     '山陽本線': ['山陽本線', '神戸線'],
 }
 
+# 手动补边(ekidata join 未覆盖的区段)
+EXTRA_EDGES = {
+    '東北本線': [('東京', '上野')],
+}
+
 
 def build_line_orders(raw_dir=None):
     """ekidata join.csv -> {维基线路norm名: {站名: 邻接站名集合}}"""
@@ -128,6 +133,11 @@ def build_line_orders(raw_dir=None):
                 g.setdefault(k, set()).update(v)
         if g:
             orders[wiki_line] = g
+    for wiki_line, edges in EXTRA_EDGES.items():
+        g = orders.setdefault(wiki_line, {})
+        for a, b in edges:
+            g.setdefault(a, set()).add(b)
+            g.setdefault(b, set()).add(a)
     for ln, g in raw_orders.items():
         orders.setdefault(ln, g)
     return orders
