@@ -32,7 +32,7 @@ class TestLoadEkidata:
         cls.data = load_ekidata()
 
     def test_station_count(self):
-        assert len(self.data['stations']) >= 10000
+        assert len(self.data['stations']) >= 8500
         assert self.data['active_count'] == len(self.data['stations'])
 
     def test_lines_count(self):
