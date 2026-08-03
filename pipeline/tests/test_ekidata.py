@@ -39,7 +39,7 @@ class TestLoadEkidata:
         assert len(self.data['lines']) >= 600
 
     def test_station_fields(self):
-        s = self.data['by_id']['1130207']  # 代々木
+        s = next(x for x in self.data['stations'] if x['id'] == '1130207')  # 代々木
         assert s['name'] == '代々木'
         assert s['pref'] == '東京都'
         assert s['muni'] == '渋谷区'
@@ -49,14 +49,14 @@ class TestLoadEkidata:
         assert '都営大江戸線' in line_names
 
     def test_kyoto_station(self):
-        s = self.data['by_id'].get('1160120')  # 京都駅
+        s = next((x for x in self.data['stations'] if x['id'] == '1160120'), None)  # 京都駅
         if s:
             assert s['muni'] == '京都市'
             assert s['ward'] == '下京区'
             assert len(s['lines']) == 7
 
     def test_hakodate_station(self):
-        s = self.data['by_id']['1110101']
+        s = next(x for x in self.data['stations'] if x['id'] == '1110101')
         assert s['name'] == '函館'
         assert s['pref'] == '北海道'
         assert s['muni'] == '函館市'
@@ -66,11 +66,11 @@ class TestLoadEkidata:
         assert missing == []
 
     def test_company_attached(self):
-        s = self.data['by_id']['1130207']
+        s = next(x for x in self.data['stations'] if x['id'] == '1130207')
         ops = {l['company'] for l in s['lines']}
         assert 'JR東日本' in ops
 
     def test_coords_present(self):
-        s = self.data['by_id']['1130207']
+        s = next(x for x in self.data['stations'] if x['id'] == '1130207')
         assert abs(s['lat'] - 35.683) < 0.01
         assert abs(s['lon'] - 139.702) < 0.01

@@ -63,10 +63,13 @@ def load_ekidata(raw_dir=None):
     by_id = {}
     for s in active:
         gid = s['station_g_cd']
-        st = by_id.get(gid)
+        # 同组异名(剥「駅」/括号后) = 不同物理站, 拆分独立; 同名才合并
+        from normalize import norm_station_name
+        key = (gid, norm_station_name(s['station_name']))
+        st = by_id.get(key)
         if st is None:
             st = {
-                'id': gid,
+                'id': key[0],
                 'name': s['station_name'],
                 'pref': prefs.get(s['pref_cd'], ''),
                 'muni': '',
@@ -78,7 +81,7 @@ def load_ekidata(raw_dir=None):
             muni, ward = parse_muni(s['address'])
             st['muni'] = muni or ''
             st['ward'] = ward or ''
-            by_id[gid] = st
+            by_id[key] = st
         lc = s['line_cd']
         li = line_info.get(lc, {})
         st['lines'].append({
@@ -97,6 +100,14 @@ def load_ekidata(raw_dir=None):
                 seen.add(key)
                 uniq.append(l)
         st['lines'] = uniq
+    # id 唯一化: 同组拆分出的多站 id 加序号
+    id_seen = {}
+    for st in by_id.values():
+        if st['id'] in id_seen:
+            id_seen[st['id']] += 1
+            st['id'] = f"{st['id']}-{id_seen[st['id']]}"
+        else:
+            id_seen[st['id']] = 1
 
     return {
         'stations': list(by_id.values()),

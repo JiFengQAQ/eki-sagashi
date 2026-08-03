@@ -23,6 +23,47 @@ STATION_ALIASES = {
     '高輪ゲートウェイ': ['gateway', 'takanawagateway'],
 }
 
+# 机场英文名 -> 日语名(公开事实, 用于「空港第N」式站名补前缀别名)
+AIRPORT_JA = {
+    'Narita': '成田', 'Haneda': '羽田', 'Kansai': '関西',
+    'New Chitose': '新千歳', 'Naha': '那覇', 'Fukuoka': '福岡',
+    'Kobe': '神戸', 'Sendai': '仙台', 'Miyazaki': '宮崎',
+    'Hanamaki': '花巻', 'Yonago': '米子', 'Osaka': '大阪',
+    'Central Japan International': '中部国際',
+}
+
+_FULLWIDTH_DIGITS = str.maketrans('０１２３４５６７８９', '0123456789')
+
+
+def systematic_aliases(name, en):
+    """系统性别名生成(非单例):
+    1) 站名括号内容(空港第２ビル（第２旅客ターミナル）→ 第２旅客ターミナル)
+    2) 「空港第N…」站: 由 en 'Airport Terminal 2·3' 数据驱动补「成田空港第Nターミナル」"""
+    import re as _re
+    out = []
+    m = _re.search(r'[（(]([^）)]+)[)）]', name)
+    if m:
+        out.append(m.group(1))
+    # 「第N旅客ターミナル」→ 补剥「旅客」变体「第Nターミナル」
+    for a in list(out):
+        mm = _re.search(r'第([0-9０-９]+)旅客ターミナル', a)
+        if mm:
+            out.append(a.replace(mm.group(0), f'第{mm.group(1)}ターミナル'))
+    # 「○○空港（第N旅客ターミナル）」→ 「○○空港第Nターミナル」
+    mm = _re.match(r'^(.+?空港)（第([0-9０-９]+)旅客ターミナル）$', name)
+    if mm:
+        n = mm.group(2).translate(_FULLWIDTH_DIGITS)
+        out.append(f'{mm.group(1)}第{n}ターミナル')
+    if name.startswith('空港第') and en:
+        en_airport = _re.match(r'(.+?)\s+Airport', en)
+        en_term = _re.search(r'Airport\s+Terminal\s+([0-9·・]+)', en)
+        if en_airport and en_term:
+            ja = AIRPORT_JA.get(en_airport.group(1))
+            if ja:
+                for n in en_term.group(1).translate(_FULLWIDTH_DIGITS).replace('・', '·').split('·'):
+                    out.append(f'{ja}空港第{n}ターミナル')
+    return out
+
 
 def build():
     t0 = time.time()
@@ -102,7 +143,11 @@ def build():
                 item['note'] = p['note']
             per.append(item)
         rec['per'] = per
-        al = STATION_ALIASES.get(st['name'])
+        al = list(STATION_ALIASES.get(st['name'], []))
+        sys_al = systematic_aliases(st['name'], en_map.get(st['id'], ''))
+        for a in sys_al:
+            if a not in al:
+                al.append(a)
         if al:
             rec['al'] = al
         en = en_map.get(st['id'])

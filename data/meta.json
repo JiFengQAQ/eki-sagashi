@@ -1,11 +1,11 @@
 {
  "name": "駅さがし data",
- "built_at": "2026-08-03T10:55:42+0800",
- "station_count": 8774,
+ "built_at": "2026-08-03T12:17:48+0800",
+ "station_count": 8974,
  "kana_coverage": 1.0,
  "roma_coverage": 1.0,
- "rid_coverage": 0.8016,
- "line_color_coverage": 0.8671,
+ "rid_coverage": 0.7983,
+ "line_color_coverage": 0.8669,
  "rid_window": "2015-2019(latest available year per station)",
  "rid_source": "国土数値情報 駅別乗降客数データ S12-25(2024年度版, CC BY 4.0)",
  "rid_note": "JR系は乗車人員×2の推定乗降; 事業者間合算なし(公式方針); 各站取窗口内最新可用年份の最大運営者値",
@@ -15,6 +15,6 @@
   "colors": "takumif/railway_colors_japan + Wikipedia 日本の鉄道ラインカラー一覧/infobox 核对",
   "kana": "Wikidata P1814 + OSM name:ja-Hira + pykakasi(例外词典)"
  },
- "sha256": "c3ae286ee45ec4950b573cbcc82b00856762326e800fa6bebca6f5bcf37ff513",
- "bytes": 2480645
+ "sha256": "e6044ee6e0c8fbe5beee5e033d68ad962170a1ea36729d07936adf958c2ffe8f",
+ "bytes": 2532491
 }

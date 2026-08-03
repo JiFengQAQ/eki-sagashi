@@ -142,6 +142,21 @@ test('英語名で検索できる (新橋 → Shimbashi)', () => {
   assert.ok(hits.includes('新橋'), 'shimbashi で見つかる');
 });
 
+test('空港ターミナル駅: 成田第2/第3 は空港第２ビルにヒット', () => {
+  for (const q of ['成田空港第2', '成田空港第3', '第2ターミナル']) {
+    const hits = search(idx, q, 5).map(s => s.name);
+    assert.ok(hits.some(n => n.includes('空港第２ビル')), `${q} で空港第２ビルが見つかる`);
+  }
+});
+
+test('空港ターミナル駅: 羽田モノレール独立駅がある', () => {
+  const names = stations.map(s => s.name);
+  assert.ok(names.includes('羽田空港第1ターミナル'), 'モノレール第1ターミナル独立駅');
+  assert.ok(names.includes('羽田空港第2ターミナル'), 'モノレール第2ターミナル独立駅');
+  const st = stations.find(s => s.name === '羽田空港第2ターミナル');
+  assert.ok(st.lines.some(l => l.n.includes('東京モノレール')), '東京モノレール路線を持つ');
+});
+
 test('長音の標準ヘボン式表記 (大阪→osaka, 京都→kyoto)', () => {
   for (const [name, roma] of [['大阪', 'osaka'], ['京都', 'kyoto'], ['東京', 'tokyo']]) {
     const st = stations.find(s => s.name === name);
