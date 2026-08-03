@@ -123,6 +123,14 @@ def norm_roma(s):
     return s
 
 
+def norm_roma_hepburn(s):
+    """标准Hepburn无长音表记: oo/ou -> o, uu -> u (大阪->osaka, 京都->kyoto, 東京->tokyo)
+    日语罗马音中 oo/ou/uu 均为长音(おう/おお/うう), 缩写安全"""
+    s = norm_roma(s)
+    s = s.replace('ou', 'o').replace('oo', 'o').replace('uu', 'u')
+    return s
+
+
 def roma_variants(s):
     """罗马音索引变体:无长音形 + 长音转ou形(东京->tokyo/toukyou)"""
     base = norm_roma(s)

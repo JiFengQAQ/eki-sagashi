@@ -17,6 +17,13 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(REPO_ROOT, 'data')
 
 
+# 英语来源别名(可考): 站名 -> 英语词列表; 来源中文维基条目名
+# 高輪ゲートウェイ: 中文维基「高輪Gateway站」, 名称来源于英语 gateway
+STATION_ALIASES = {
+    '高輪ゲートウェイ': ['gateway', 'takanawagateway'],
+}
+
+
 def build():
     t0 = time.time()
     eki = load_ekidata()
@@ -78,6 +85,9 @@ def build():
                 item['note'] = p['note']
             per.append(item)
         rec['per'] = per
+        al = STATION_ALIASES.get(st['name'])
+        if al:
+            rec['al'] = al
         stations.append(rec)
 
     stations.sort(key=lambda s: (s['rid']['v'] is None, -(s['rid']['v'] or 0), s['kana']))

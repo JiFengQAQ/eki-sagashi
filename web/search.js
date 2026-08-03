@@ -83,6 +83,9 @@ export function buildIndex(stations, canon) {
       st.roma,
       st.roma_ou || st.roma,
     ]);
+    if (Array.isArray(st.al)) {
+      for (const a of st.al) keys.add(normalizeQuery(a, canon));
+    }
     for (const k of keys) {
       if (k) entries.push({ k, id: i });
     }

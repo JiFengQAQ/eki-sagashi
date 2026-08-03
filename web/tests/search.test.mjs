@@ -124,3 +124,18 @@ test('search: 大宮 romaji', () => {
   const r = search(idx, 'omiya', 10);
   assert.ok(r.some(s => s.name === '大宮'));
 });
+
+test('英語由来別名で検索できる (高輪ゲートウェイ → gateway)', () => {
+  const hits = search(idx, 'gateway', 5).map(s => s.name);
+  assert.ok(hits.includes('高輪ゲートウェイ'), 'gateway で高輪ゲートウェイが見つかる');
+  const st = stations.find(s => s.name === '高輪ゲートウェイ');
+  assert.equal(st.roma, 'takanawagateway', 'JR公式英文名が使われる');
+});
+
+test('長音の標準ヘボン式表記 (大阪→osaka, 京都→kyoto)', () => {
+  for (const [name, roma] of [['大阪', 'osaka'], ['京都', 'kyoto'], ['東京', 'tokyo']]) {
+    const st = stations.find(s => s.name === name);
+    assert.equal(st.roma, roma, `${name} のromaは${roma}`);
+    assert.ok(search(idx, roma, 5).some(s => s.name === name), `${roma} で見つかる`);
+  }
+});

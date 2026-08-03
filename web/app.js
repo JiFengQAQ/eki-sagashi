@@ -1,5 +1,5 @@
 // 駅さがし アプリ: 検索UI + 詳細表示 + テーマ
-import { buildIndex, search } from './search.js';
+import { buildIndex, search } from './search.js?v=4';
 
 (function () {
   'use strict';
@@ -58,15 +58,12 @@ import { buildIndex, search } from './search.js';
     } else {
       hintEl.style.display = '';
     }
+    if (typeof updateClearBtn === 'function') updateClearBtn();
   }
 
   function renderResults(list, q) {
     resultsEl.innerHTML = '';
     if (!q.trim()) {
-      const li = document.createElement('li');
-      li.className = 'empty-note';
-      li.textContent = '駅名・かな・ローマ字・漢字で検索できます';
-      resultsEl.appendChild(li);
       return;
     }
     if (!list.length) {
@@ -115,7 +112,7 @@ import { buildIndex, search } from './search.js';
     let html = `<h2>${escapeHtml(st.name)}</h2>`;
     const readings = [st.kana, st.roma].filter(Boolean).join(' / ');
     html += `<p class="readings">${escapeHtml(readings)}</p>`;
-    html += `<p class="place">${escapeHtml(stationSub(st))}${st.lat ? ` · <a href="https://www.google.com/maps?q=${st.lat},${st.lon}" rel="noopener" target="_blank">地図</a>` : ''}</p>`;
+    html += `<p class="place">${escapeHtml(stationSub(st))}</p>`;
 
     html += `<h3>路線</h3><div class="line-list">`;
     st.lines.forEach((l) => {
@@ -124,15 +121,8 @@ import { buildIndex, search } from './search.js';
     });
     html += `</div>`;
 
-    html += `<h3>乗降人員</h3>`;
-    const v = st.rid && st.rid.v;
-    if (v) {
-      html += `<p class="rid-main">${fmt(v)}<span class="u">人/日</span><span class="y">${st.rid.y}年度（2015〜2019年の最新公表年度）</span></p>`;
-    } else {
-      html += `<p class="rid-na">公表データなし</p>`;
-    }
     if (st.per && st.per.length) {
-      html += `<table class="per-table"><thead><tr><th>事業者</th><th>路線</th><th class="num">人/日</th><th class="num">年度</th></tr></thead><tbody>`;
+      html += `<h3>乗降人員</h3><table class="per-table"><thead><tr><th>事業者</th><th>路線</th><th class="num">人/日</th><th class="num">年度</th></tr></thead><tbody>`;
       st.per.forEach((p) => {
         let note = p.note ? `<div style="color:var(--text-3);font-size:11px">${escapeHtml(p.note)}</div>` : '';
         html += `<tr><td>${escapeHtml(p.op)}</td><td>${escapeHtml(p.line)}${note}</td><td class="num">${fmt(p.v)}</td><td class="num">${p.y}</td></tr>`;
@@ -143,22 +133,37 @@ import { buildIndex, search } from './search.js';
     html += `<div class="detail-links">` +
       `<a class="btn" href="https://ja.wikipedia.org/wiki/${encodeURIComponent(st.name + '駅')}" rel="noopener" target="_blank">Wikipedia</a>` +
       (st.lat ? `<a class="btn" href="https://www.openstreetmap.org/?mlat=${st.lat}&mlon=${st.lon}#map=16/${st.lat}/${st.lon}" rel="noopener" target="_blank">OpenStreetMap</a>` : '') +
-      `<button class="btn" id="closeDetail">閉じる</button></div>`;
+      (st.lat ? `<a class="btn" href="https://maps.apple.com/?ll=${st.lat},${st.lon}&q=${encodeURIComponent(st.name)}" rel="noopener" target="_blank">Apple Maps</a>` : '') +
+      `</div>`;
 
     detailEl.innerHTML = html;
     detailEl.hidden = false;
     detailEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    document.getElementById('closeDetail').addEventListener('click', () => {
-      detailEl.hidden = true;
-      qEl.focus();
-    });
+    updateClearBtn();
   }
+
+  // ---------- クリアボタン ----------
+  const clearBtn = document.getElementById('clearBtn');
+
+  function updateClearBtn() {
+    const show = qEl.value.length > 0 || !detailEl.hidden;
+    clearBtn.hidden = !show;
+  }
+
+  clearBtn.addEventListener('click', () => {
+    qEl.value = '';
+    detailEl.hidden = true;
+    runSearch();
+    qEl.focus();
+    updateClearBtn();
+  });
 
   // ---------- イベント ----------
   let timer = null;
   qEl.addEventListener('input', () => {
     clearTimeout(timer);
     timer = setTimeout(runSearch, 40);
+    updateClearBtn();
   });
   qEl.addEventListener('keydown', (e) => {
     const items = resultsEl.querySelectorAll('.result-item');
@@ -212,8 +217,8 @@ import { buildIndex, search } from './search.js';
   async function init() {
     try {
       const [stationsData, canon] = await Promise.all([
-        fetch('stations.json').then(r => r.json()),
-        fetch('canon.json').then(r => r.json()),
+        fetch('stations.json?v=4').then(r => r.json()),
+        fetch('canon.json?v=4').then(r => r.json()),
       ]);
       stations = stationsData;
       idx = buildIndex(stations, canon);

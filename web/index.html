@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <header class="topbar">
@@ -30,6 +30,7 @@
       <input id="q" type="search" role="combobox" aria-expanded="false" aria-controls="results"
              aria-autocomplete="list" autocomplete="off" autocapitalize="none" spellcheck="false"
              placeholder="駅名・かな・ローマ字で検索" enterkeyhint="search">
+      <button id="clearBtn" class="clear-btn" aria-label="クリア" title="クリア" hidden>✕</button>
     </div>
     <p class="hint" id="hint">例：<button class="chip" data-q="新宿">新宿</button><button class="chip" data-q="しんじゅく">しんじゅく</button><button class="chip" data-q="shinjuku">shinjuku</button><button class="chip" data-q="涩谷">涩谷</button><button class="chip" data-q="とうきょう">とうきょう</button></p>
     <ul id="results" role="listbox" aria-label="検索結果"></ul>
@@ -39,7 +40,7 @@
 </main>
 
 <footer class="footer">
-  <p>データ出典：<a href="https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html" rel="noopener" target="_blank">国土数値情報 駅別乗降客数データ</a>（国土交通省, CC BY 4.0）／<a href="https://www.ekidata.jp/" rel="noopener" target="_blank">駅データ.jp</a>（ekidata 2022年9月版）／<a href="https://github.com/takumif/railway_colors_japan" rel="noopener" target="_blank">railway_colors_japan</a>／<a href="https://www.wikidata.org/" rel="noopener" target="_blank">Wikidata</a>・<a href="https://www.openstreetmap.org/" rel="noopener" target="_blank">OpenStreetMap</a>（駅名読み）</p>
+  <p>データ出典：<a href="https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html" rel="noopener" target="_blank">国土数値情報 S12</a>（CC BY 4.0）／<a href="https://www.ekidata.jp/" rel="noopener" target="_blank">駅データ.jp</a>／<a href="https://github.com/takumif/railway_colors_japan" rel="noopener" target="_blank">railway_colors_japan</a>／<a href="https://www.wikidata.org/" rel="noopener" target="_blank">Wikidata</a>・<a href="https://www.openstreetmap.org/" rel="noopener" target="_blank">OSM</a>（駅名読み）</p>
   <p id="metaLine">読み込み中…</p>
 </footer>
 
@@ -53,6 +54,6 @@
   </div>
 </div>
 
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=4"></script>
 </body>
 </html>

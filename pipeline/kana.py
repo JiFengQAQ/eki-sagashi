@@ -5,7 +5,7 @@ import os
 
 import pykakasi
 
-from normalize import canonical_kanji, norm_kana, norm_roma, norm_station_name, roma_variants
+from normalize import canonical_kanji, norm_kana, norm_roma, norm_roma_hepburn, norm_station_name, roma_variants
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,6 +19,7 @@ EXCEPTIONS = {
     '函館': 'はこだて', '旭川': 'あさひかわ', '札幌': 'さっぽろ',
     '横浜': 'よこはま', '名古屋': 'なごや', '京都': 'きょうと',
     '神戸': 'こうべ', '広島': 'ひろしま', '博多': 'はかた',
+    '高輪ゲートウェイ': 'たかなわげーとうぇい',
     '那覇': 'なは', '松山': 'まつやま', '高知': 'こうち',
     '徳島': 'とくしま', '金沢': 'かなざわ', '富山': 'とやま',
     '長野': 'ながの', '甲府': 'こうふ', '静岡': 'しずおか',
@@ -100,8 +101,14 @@ def _pykakasi_kana(text):
     return ''.join(item['hira'] for item in _pykakasi().convert(text))
 
 
+# 罗马音例外(官方英文站名, pykakasi对片假名外来语转写不可靠)
+ROMA_EXCEPTIONS = {
+    '高輪ゲートウェイ': 'takanawagateway',
+}
+
+
 def _pykakasi_roma(text):
-    return norm_roma(''.join(item['hepburn'] for item in _pykakasi().convert(text)))
+    return norm_roma_hepburn(''.join(item['hepburn'] for item in _pykakasi().convert(text)))
 
 
 def build_kana(stations, wd=None, osm=None):
@@ -124,11 +131,15 @@ def build_kana(stations, wd=None, osm=None):
         else:
             kana = norm_kana(EXCEPTIONS.get(name, _pykakasi_kana(name)))
         if os_entry and os_entry[1]:
-            roma = os_entry[1]
+            roma = norm_roma_hepburn(os_entry[1])
         else:
-            roma = _pykakasi_roma(name)
+            roma = _pykakasi_roma(EXCEPTIONS.get(name, name))
+        if name in ROMA_EXCEPTIONS:
+            roma = ROMA_EXCEPTIONS[name]
         # ou形变体: 基于 pykakasi 原始 hepburn(含长音符号) 生成, 不受OSM无长音影响
-        roma_ou = roma_variants(_pykakasi_roma_raw(name))[-1]
+        roma_ou = roma_variants(_pykakasi_roma_raw(EXCEPTIONS.get(name, name)))[-1]
+        if name in ROMA_EXCEPTIONS:
+            roma_ou = roma
         result[st['id']] = (kana, roma, roma_ou)
     return result
 
