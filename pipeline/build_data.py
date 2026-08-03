@@ -43,7 +43,7 @@ def build():
     for st in eki['stations']:
         en = kana[st['id']][3]
         if not en:
-            en = wd_en.get(st['name'], '')
+            en = wd_en.get(st['name']) or wd_en.get(st['name'] + '駅', '')
         if en:
             cleaned = _re.sub(r'\s*[Ss]tation$', '', en).strip()
             # 与roma同形则无意义(如 Tokyo == tokyo)
