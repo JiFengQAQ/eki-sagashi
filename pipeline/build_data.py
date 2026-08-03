@@ -33,6 +33,23 @@ def build():
     rid = join_ridership(s12)
     kana = build_kana(eki['stations'])
 
+    # 英文名合并: OSM name:en > Wikidata en label; 清洗尾 Station
+    import re as _re
+    wd_en = {}
+    wd_en_path = os.path.join(DATA_DIR, 'raw', 'wd_en.json')
+    if os.path.exists(wd_en_path):
+        wd_en = json.load(open(wd_en_path, encoding='utf-8'))
+    en_map = {}
+    for st in eki['stations']:
+        en = kana[st['id']][3]
+        if not en:
+            en = wd_en.get(st['name'], '')
+        if en:
+            cleaned = _re.sub(r'\s*[Ss]tation$', '', en).strip()
+            # 与roma同形则无意义(如 Tokyo == tokyo)
+            if cleaned.lower() != kana[st['id']][1]:
+                en_map[st['id']] = cleaned
+
     # canon.json: 站名/线路字符集 + JP_MAP键 + 简繁体两侧 的 canonical 映射(前端JS查表用)
     from normalize import JP_MAP, canonical_kanji, _KANJI_RE, _s2t
     chars = set(JP_MAP.keys())
@@ -61,7 +78,7 @@ def build():
 
     stations = []
     for st in eki['stations']:
-        k, r, r_ou = kana[st['id']]
+        k, r, r_ou, _ = kana[st['id']]
         rid_info = rid.get(st['id'], {'rid': {'v': None, 'y': None}, 'per': []})
         lines = [{'n': l['name'], 'c': l.get('color')} for l in st['lines']]
         rec = {
@@ -88,6 +105,9 @@ def build():
         al = STATION_ALIASES.get(st['name'])
         if al:
             rec['al'] = al
+        en = en_map.get(st['id'])
+        if en:
+            rec['en'] = en
         stations.append(rec)
 
     stations.sort(key=lambda s: (s['rid']['v'] is None, -(s['rid']['v'] or 0), s['kana']))

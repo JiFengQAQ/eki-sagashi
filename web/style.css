@@ -37,8 +37,18 @@ body {
   color: var(--text);
   line-height: 1.55;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
+}
+
+/* 顶部(标题栏+搜索框)固定, 内容滚动时保持可见 */
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  flex: none;
 }
 
 /* ---------- top bar ---------- */
@@ -71,6 +81,8 @@ body {
 
 /* ---------- search ---------- */
 main { max-width: 760px; width: 100%; margin: 0 auto; padding: 8px 18px 24px; flex: 1; }
+
+.search-wrap { max-width: 760px; width: 100%; margin: 0 auto; padding: 0 18px 2px; }
 
 .search-box {
   display: flex; align-items: center; gap: 10px;

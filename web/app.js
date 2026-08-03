@@ -1,5 +1,5 @@
 // 駅さがし アプリ: 検索UI + 詳細表示 + テーマ
-import { buildIndex, search } from './search.js?v=4';
+import { buildIndex, search } from './search.js?v=5';
 
 (function () {
   'use strict';
@@ -99,6 +99,13 @@ import { buildIndex, search } from './search.js?v=4';
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  // 英文名是否等价于罗马音(归一化: 小写+去空格/连字符/撇号后相同)
+  function sameAsRoma(en, roma) {
+    if (!roma) return false;
+    const norm = s => String(s).toLowerCase().replace(/[\s'\-]/g, '');
+    return norm(en) === norm(roma);
+  }
+
   function setActive(i) {
     const items = resultsEl.querySelectorAll('.result-item');
     items.forEach((el, k) => {
@@ -112,6 +119,9 @@ import { buildIndex, search } from './search.js?v=4';
     let html = `<h2>${escapeHtml(st.name)}</h2>`;
     const readings = [st.kana, st.roma].filter(Boolean).join(' / ');
     html += `<p class="readings">${escapeHtml(readings)}</p>`;
+    if (st.en && !sameAsRoma(st.en, st.roma)) {
+      html += `<p class="readings">${escapeHtml(st.en)}</p>`;
+    }
     html += `<p class="place">${escapeHtml(stationSub(st))}</p>`;
 
     html += `<h3>路線</h3><div class="line-list">`;
@@ -217,8 +227,8 @@ import { buildIndex, search } from './search.js?v=4';
   async function init() {
     try {
       const [stationsData, canon] = await Promise.all([
-        fetch('stations.json?v=4').then(r => r.json()),
-        fetch('canon.json?v=4').then(r => r.json()),
+        fetch('stations.json?v=5').then(r => r.json()),
+        fetch('canon.json?v=5').then(r => r.json()),
       ]);
       stations = stationsData;
       idx = buildIndex(stations, canon);

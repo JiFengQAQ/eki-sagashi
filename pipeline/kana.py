@@ -82,8 +82,11 @@ def load_osm_kana(path=None):
             continue
         kana = t.get('name:ja-Hira') or t.get('name:ja_kana') or ''
         roma = t.get('name:ja_rm') or ''
-        if kana or roma:
-            out[name] = (norm_kana(kana) if kana else '', norm_roma(roma) if roma else '')
+        en = (t.get('name:en') or '').strip()
+        if kana or roma or en:
+            out[name] = (norm_kana(kana) if kana else '',
+                         norm_roma(roma) if roma else '',
+                         en)
     return out
 
 
@@ -122,7 +125,7 @@ def build_kana(stations, wd=None, osm=None):
     for st in stations:
         name = st['name']
         norm = canonical_kanji(norm_station_name(name))
-        kana, roma = '', ''
+        kana, roma, en = '', '', ''
         os_entry = osm.get(norm)
         if os_entry and os_entry[0]:
             kana = os_entry[0]
@@ -136,11 +139,13 @@ def build_kana(stations, wd=None, osm=None):
             roma = _pykakasi_roma(EXCEPTIONS.get(name, name))
         if name in ROMA_EXCEPTIONS:
             roma = ROMA_EXCEPTIONS[name]
+        if os_entry and os_entry[2]:
+            en = os_entry[2]
         # ou形变体: 基于 pykakasi 原始 hepburn(含长音符号) 生成, 不受OSM无长音影响
         roma_ou = roma_variants(_pykakasi_roma_raw(EXCEPTIONS.get(name, name)))[-1]
         if name in ROMA_EXCEPTIONS:
             roma_ou = roma
-        result[st['id']] = (kana, roma, roma_ou)
+        result[st['id']] = (kana, roma, roma_ou, en)
     return result
 
 

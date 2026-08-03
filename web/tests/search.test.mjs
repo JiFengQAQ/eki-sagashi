@@ -132,6 +132,16 @@ test('英語由来別名で検索できる (高輪ゲートウェイ → gateway
   assert.equal(st.roma, 'takanawagateway', 'JR公式英文名が使われる');
 });
 
+test('英語名で検索できる (鹿島サッカースタジアム → kashima soccer)', () => {
+  const hits = search(idx, 'kashima soccer', 5).map(s => s.name);
+  assert.ok(hits.includes('鹿島サッカースタジアム（臨）'), 'kashima soccer で見つかる');
+});
+
+test('英語名で検索できる (新橋 → Shimbashi)', () => {
+  const hits = search(idx, 'shimbashi', 5).map(s => s.name);
+  assert.ok(hits.includes('新橋'), 'shimbashi で見つかる');
+});
+
 test('長音の標準ヘボン式表記 (大阪→osaka, 京都→kyoto)', () => {
   for (const [name, roma] of [['大阪', 'osaka'], ['京都', 'kyoto'], ['東京', 'tokyo']]) {
     const st = stations.find(s => s.name === name);

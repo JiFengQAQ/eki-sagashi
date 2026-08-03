@@ -43,8 +43,8 @@ function expandLongVowel(s) {
 export function normalizeQuery(input, canon) {
   let s = String(input || '').normalize('NFKC');
   s = s.replace(/駅$/, '');
-  // 罗马音(纯ASCII+长音符号)
-  if (/^[a-zāēīōūĀĒĪŌŪ\s'\-]+$/i.test(s)) {
+  // 罗马音(纯ASCII+长音符号+数字)
+  if (/^[a-z0-9āēīōūĀĒĪŌŪ\s'\-]+$/i.test(s)) {
     return s.toLowerCase()
       .replace(/[āēīōū]/g, ch => MACRON_MAP[ch])
       .replace(/[\s'\-]/g, '');
@@ -86,6 +86,7 @@ export function buildIndex(stations, canon) {
     if (Array.isArray(st.al)) {
       for (const a of st.al) keys.add(normalizeQuery(a, canon));
     }
+    if (st.en) keys.add(normalizeQuery(st.en, canon));
     for (const k of keys) {
       if (k) entries.push({ k, id: i });
     }
