@@ -129,7 +129,8 @@ test('英語由来別名で検索できる (高輪ゲートウェイ → gateway
   const hits = search(idx, 'gateway', 5).map(s => s.name);
   assert.ok(hits.includes('高輪ゲートウェイ'), 'gateway で高輪ゲートウェイが見つかる');
   const st = stations.find(s => s.name === '高輪ゲートウェイ');
-  assert.equal(st.roma, 'takanawagateway', 'JR公式英文名が使われる');
+  assert.equal(st.roma, 'takanawageetowei', 'romaは仮名からの黒本式転写');
+  assert.equal(st.en, 'Takanawa Gateway', 'enはJR公式英文名');
 });
 
 test('英語名で検索できる (鹿島サッカースタジアム → kashima soccer)', () => {

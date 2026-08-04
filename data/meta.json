@@ -1,9 +1,9 @@
 {
  "name": "駅さがし data",
- "built_at": "2026-08-03T12:17:48+0800",
+ "built_at": "2026-08-05T00:42:41+0800",
  "station_count": 8974,
- "kana_coverage": 1.0,
- "roma_coverage": 1.0,
+ "kana_coverage": 0.8318,
+ "roma_coverage": 0.8318,
  "rid_coverage": 0.7983,
  "line_color_coverage": 0.8669,
  "rid_window": "2015-2019(latest available year per station)",
@@ -13,8 +13,8 @@
   "ekidata": "https://www.ekidata.jp/ (saitamasaitama/ekidata-json 2022-09-21 snapshot)",
   "ridership": "https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html",
   "colors": "takumif/railway_colors_japan + Wikipedia 日本の鉄道ラインカラー一覧/infobox 核对",
-  "kana": "Wikidata P1814 + OSM name:ja-Hira + pykakasi(例外词典)"
+  "kana": "人工例外 > OSM name:ja-Hira > Wikidata P1814; roma由kana确定性黑本式转换(无汉字转读)"
  },
- "sha256": "e6044ee6e0c8fbe5beee5e033d68ad962170a1ea36729d07936adf958c2ffe8f",
- "bytes": 2532491
+ "sha256": "c61b8765aca801bd62b1458a0cd5b35ba667bb40fe2b426a4edc745714c0cf21",
+ "bytes": 2555298
 }

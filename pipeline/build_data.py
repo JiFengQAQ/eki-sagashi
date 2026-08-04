@@ -87,9 +87,7 @@ def build():
             en = wd_en.get(st['name']) or wd_en.get(st['name'] + '駅', '')
         if en:
             cleaned = _re.sub(r'\s*[Ss]tation$', '', en).strip()
-            # 与roma同形则无意义(如 Tokyo == tokyo)
-            if cleaned.lower() != kana[st['id']][1]:
-                en_map[st['id']] = cleaned
+            en_map[st['id']] = cleaned
 
     # canon.json: 站名/线路字符集 + JP_MAP键 + 简繁体两侧 的 canonical 映射(前端JS查表用)
     from normalize import JP_MAP, canonical_kanji, _KANJI_RE, _s2t
@@ -184,7 +182,7 @@ def build():
             'ekidata': 'https://www.ekidata.jp/ (saitamasaitama/ekidata-json 2022-09-21 snapshot)',
             'ridership': 'https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html',
             'colors': 'takumif/railway_colors_japan + Wikipedia 日本の鉄道ラインカラー一覧/infobox 核对',
-            'kana': 'Wikidata P1814 + OSM name:ja-Hira + pykakasi(例外词典)',
+            'kana': '人工例外 > OSM name:ja-Hira > Wikidata P1814; roma由kana确定性黑本式转换(无汉字转读)',
         },
         'sha256': hashlib.sha256(raw.encode('utf-8')).hexdigest(),
         'bytes': len(raw),

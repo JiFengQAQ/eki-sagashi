@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""站名读音合并:Wikidata P1814 + OSM name:ja-Hira/ja_rm 优先, pykakasi 兜底, 例外词典修正"""
+"""站名读音: 可信来源(人工例外 > OSM > Wikidata) 只做读音; roma 从 kana 确定性黑本式转换
+不变量: roma == kana2roma(kana) 对每个站成立; 无可信读音的站 kana/roma 为空(不猜)"""
 import json
 import os
+import re
 
-import pykakasi
-
-from normalize import canonical_kanji, norm_kana, norm_roma, norm_roma_hepburn, norm_station_name, roma_variants
+from normalize import canonical_kanji, norm_kana, norm_station_name
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# pykakasi 已知错误/常见专有名词修正(键=站名, 值=平假名)
+# 人工确认读音(键=站名canonical, 值=平假名); 最高优先级, 覆盖外部数据错误
 EXCEPTIONS = {
     '鹿児島': 'かごしま', '鹿児島中央': 'かごしまちゅうおう',
     '我孫子': 'あびこ', '姪浜': 'めいのはま',
@@ -40,11 +40,16 @@ EXCEPTIONS = {
     '久留米': 'くるめ', '別府': 'べっぷ', '八代': 'やつしろ',
     '八戸': 'はちのへ', '新函館北斗': 'しんはこだてほくと',
     '福岡': 'ふくおか', '新横浜': 'しんよこはま', '品川': 'しながわ',
-    '上野': 'うえの', '渋谷': 'しぶや', '池袋': 'いけぶくろ',
+    '上野': 'うえの', '池袋': 'いけぶくろ',
     '秋葉原': 'あきはばら', '吉祥寺': 'きちじょうじ', '立川': 'たちかわ',
     '横須賀': 'よこすか', '成田': 'なりた', '羽田空港': 'はねだくうこう',
     '成田空港': 'なりたくうこう', '関西空港': 'かんさいくうこう',
     '中部国際空港': 'ちゅうぶこくさいくうこう', '福岡空港': 'ふくおかくうこう',
+}
+
+# 同名异读站: (站名, 都道府県) -> 平假名
+PREF_EXCEPTIONS = {
+    ('日本橋', '東京都'): 'にほんばし',
 }
 
 
@@ -63,10 +68,7 @@ def load_wd_kana(path=None):
         kana = r.get('kana', {}).get('value', '')
         if not kana:
             continue
-        kana = norm_kana(kana)
-        if kana.endswith('えき'):
-            kana = kana[:-2]
-        out[name] = kana
+        out[name] = norm_kana(kana)
     return out
 
 
@@ -85,38 +87,135 @@ def load_osm_kana(path=None):
         en = (t.get('name:en') or '').strip()
         if kana or roma or en:
             out[name] = (norm_kana(kana) if kana else '',
-                         norm_roma(roma) if roma else '',
+                         roma.strip(),
                          en)
     return out
 
 
-_kakasi = None
+_PAREN_RE = re.compile(r'[（(][^）)]*[)）]')
 
 
-def _pykakasi():
-    global _kakasi
-    if _kakasi is None:
-        _kakasi = pykakasi.kakasi()
-    return _kakasi
+def _clean_kana(kana, st_name):
+    """按ekidata站名清洗假名: norm(片->平/ー展开) ->
+    括号: 站名含括号 -> 剥括号内容(别名读音); 站名无括号 -> 去括号字符保留内容(注音)
+    尾えき: ekidata站名(norm)不含駅时剥除"""
+    k = norm_kana(kana)
+    k = _PAREN_RE.sub('', k) if ('（' in st_name or '(' in st_name) \
+        else k.replace('（', '').replace('）', '').replace('(', '').replace(')', '')
+    k = k.replace('＊', '').replace('*', '')
+    if not norm_station_name(st_name).endswith('駅') and k.endswith('えき'):
+        k = k[:-2]
+    return k.strip()
 
 
-def _pykakasi_kana(text):
-    return ''.join(item['hira'] for item in _pykakasi().convert(text))
+# ---------- kana -> roma 确定性黑本式 ----------
 
-
-# 罗马音例外(官方英文站名, pykakasi对片假名外来语转写不可靠)
-ROMA_EXCEPTIONS = {
-    '高輪ゲートウェイ': 'takanawagateway',
+_ROWS = {
+    'あ': 'a', 'い': 'i', 'う': 'u', 'え': 'e', 'お': 'o',
+    'か': 'ka', 'き': 'ki', 'く': 'ku', 'け': 'ke', 'こ': 'ko',
+    'さ': 'sa', 'し': 'shi', 'す': 'su', 'せ': 'se', 'そ': 'so',
+    'た': 'ta', 'ち': 'chi', 'つ': 'tsu', 'て': 'te', 'と': 'to',
+    'な': 'na', 'に': 'ni', 'ぬ': 'nu', 'ね': 'ne', 'の': 'no',
+    'は': 'ha', 'ひ': 'hi', 'ふ': 'fu', 'へ': 'he', 'ほ': 'ho',
+    'ま': 'ma', 'み': 'mi', 'む': 'mu', 'め': 'me', 'も': 'mo',
+    'や': 'ya', 'ゆ': 'yu', 'よ': 'yo',
+    'ら': 'ra', 'り': 'ri', 'る': 'ru', 'れ': 're', 'ろ': 'ro',
+    'わ': 'wa', 'を': 'o', 'ん': 'n',
+    'が': 'ga', 'ぎ': 'gi', 'ぐ': 'gu', 'げ': 'ge', 'ご': 'go',
+    'ざ': 'za', 'じ': 'ji', 'ず': 'zu', 'ぜ': 'ze', 'ぞ': 'zo',
+    'だ': 'da', 'ぢ': 'ji', 'づ': 'zu', 'で': 'de', 'ど': 'do',
+    'ば': 'ba', 'び': 'bi', 'ぶ': 'bu', 'べ': 'be', 'ぼ': 'bo',
+    'ぱ': 'pa', 'ぴ': 'pi', 'ぷ': 'pu', 'ぺ': 'pe', 'ぽ': 'po',
+    'ぁ': 'a', 'ぃ': 'i', 'ぅ': 'u', 'ぇ': 'e', 'ぉ': 'o',
+    'ゃ': 'ya', 'ゅ': 'yu', 'ょ': 'yo',
+    'ゔ': 'vu',
+}
+_YOON = {'き': 'ky', 'し': 'sh', 'ち': 'ch', 'に': 'ny', 'ひ': 'hy',
+         'み': 'my', 'り': 'ry', 'ぎ': 'gy', 'じ': 'j', 'ぢ': 'j',
+         'び': 'by', 'ぴ': 'py'}
+# 外来语小假名组合(大假名+ぁぃぅぇぉ): 前字+小字 -> 罗马音
+_SMALL_COMBO = {
+    'うぇ': 'we', 'うぃ': 'wi', 'うぉ': 'wo', 'うぁ': 'wa',
+    'いぇ': 'ye',
+    'ゔぁ': 'va', 'ゔぃ': 'vi', 'ゔぇ': 've', 'ゔぉ': 'vo',
+    'ふぁ': 'fa', 'ふぃ': 'fi', 'ふぇ': 'fe', 'ふぉ': 'fo',
+    'てぃ': 'ti', 'てゅ': 'tyu', 'とぅ': 'tu',
+    'でぃ': 'di', 'でゅ': 'dyu', 'どぅ': 'du',
+    'しぇ': 'she', 'じぇ': 'je', 'ちぇ': 'che', 'ぢぇ': 'je',
+    'つぁ': 'tsa', 'つぃ': 'tsi', 'つぇ': 'tse', 'つぉ': 'tso',
+    'くぁ': 'kwa', 'くぃ': 'kwi', 'くぇ': 'kwe', 'くぉ': 'kwo',
+    'ぐぁ': 'gwa', 'ぐぃ': 'gwi', 'ぐぇ': 'gwe', 'ぐぉ': 'gwo',
+    'きぇ': 'kye', 'ぎぇ': 'gye', 'にぇ': 'nye', 'ひぇ': 'hye',
+    'びぇ': 'bye', 'ぴぇ': 'pye', 'みぇ': 'mye', 'りぇ': 'rye',
 }
 
 
-def _pykakasi_roma(text):
-    return norm_roma_hepburn(''.join(item['hepburn'] for item in _pykakasi().convert(text)))
+def _kana_to_roma(kana, long_vowel):
+    """确定性黑本式转换; long_vowel=True 时お段长音展开为 ou (搜索变体用)"""
+    out = []
+    prev_ch = ''
+    i = 0
+    while i < len(kana):
+        ch = kana[i]
+        if ch in 'ゃゅょ':
+            combo = prev_ch + ch
+            if combo in _SMALL_COMBO:
+                out[-1] = _SMALL_COMBO[combo]
+            elif prev_ch in _YOON:
+                out[-1] = _YOON[prev_ch] + _ROWS[ch][1:]
+            else:
+                out.append(_ROWS.get(ch, ch))
+            prev_ch = ''
+            i += 1
+            continue
+        if ch in 'ぁぃぅぇぉ':
+            combo = prev_ch + ch
+            if combo in _SMALL_COMBO:
+                out[-1] = _SMALL_COMBO[combo]
+            else:
+                out.append(_ROWS.get(ch, ch))
+            prev_ch = ''
+            i += 1
+            continue
+        if ch == 'っ':
+            out.append('__TSU__')
+            prev_ch = ''
+            i += 1
+            continue
+        out.append(_ROWS.get(ch, ch))
+        prev_ch = ch
+        i += 1
+    res = ''
+    for j, s in enumerate(out):
+        if s == '__TSU__':
+            nxt = out[j + 1] if j + 1 < len(out) else ''
+            if nxt and nxt != '__TSU__':
+                res += nxt[0]
+            continue
+        res += s
+    # 撥音: ん+b/p/m -> m(黑本式双写: shimbashi, shimmachi)
+    res = re.sub(r'n([bpm])', r'm\1', res)
+    if long_vowel:
+        # 長音展开形: お段長音 ou/oo 原样(とうきょう->toukyou), う段 uu 原样
+        return res
+    # 无長音形: お段長音(ou/oo)缩 o; う段長音(uu)保留(空港->kuuko)
+    return res.replace('ou', 'o').replace('oo', 'o')
+
+
+def kana2roma(kana):
+    """标准黑本式无長音表记: お段長音->o, う段長音保留 uu"""
+    return _kana_to_roma(kana, long_vowel=False)
+
+
+def kana2roma_ou(kana):
+    """長音展开形(搜索变体): とうきょう->toukyou, くうこう->kuukou"""
+    return _kana_to_roma(kana, long_vowel=True)
 
 
 def build_kana(stations, wd=None, osm=None):
-    """每站返回(id -> (kana, romaji, romaji_ou)); 优先级: OSM > Wikidata > pykakasi(+例外);
-    查找键用canonical_kanji(ケ->ヶ、々展开), 与WD/OSM表记统一"""
+    """每站返回(id -> (kana, romaji, romaji_ou, en));
+    读音优先级: PREF_EXCEPTIONS > EXCEPTIONS > OSM > Wikidata; 都无则留空
+    roma/roma_ou 由 kana 确定性转换, 不依赖汉字"""
     if wd is None:
         wd = load_wd_kana()
     if osm is None:
@@ -125,29 +224,22 @@ def build_kana(stations, wd=None, osm=None):
     for st in stations:
         name = st['name']
         norm = canonical_kanji(norm_station_name(name))
-        kana, roma, en = '', '', ''
-        os_entry = osm.get(norm)
-        if os_entry and os_entry[0]:
-            kana = os_entry[0]
-        elif norm in wd:
-            kana = wd[norm]
+        kana, en = '', ''
+        pf = (name, st.get('pref', ''))
+        if pf in PREF_EXCEPTIONS:
+            kana = PREF_EXCEPTIONS[pf]
+        elif norm in EXCEPTIONS:
+            kana = EXCEPTIONS[norm]
         else:
-            kana = norm_kana(EXCEPTIONS.get(name, _pykakasi_kana(name)))
-        if os_entry and os_entry[1]:
-            roma = norm_roma_hepburn(os_entry[1])
-        else:
-            roma = _pykakasi_roma(EXCEPTIONS.get(name, name))
-        if name in ROMA_EXCEPTIONS:
-            roma = ROMA_EXCEPTIONS[name]
-        if os_entry and os_entry[2]:
-            en = os_entry[2]
-        # ou形变体: 基于 pykakasi 原始 hepburn(含长音符号) 生成, 不受OSM无长音影响
-        roma_ou = roma_variants(_pykakasi_roma_raw(EXCEPTIONS.get(name, name)))[-1]
-        if name in ROMA_EXCEPTIONS:
-            roma_ou = roma
+            os_entry = osm.get(norm)
+            if os_entry and os_entry[0]:
+                kana = os_entry[0]
+            elif norm in wd:
+                kana = wd[norm]
+            if os_entry:
+                en = os_entry[2]
+        kana = _clean_kana(kana, name) if kana else ''
+        roma = kana2roma(kana) if kana else ''
+        roma_ou = kana2roma_ou(kana) if kana else ''
         result[st['id']] = (kana, roma, roma_ou, en)
     return result
-
-
-def _pykakasi_roma_raw(text):
-    return ''.join(item['hepburn'] for item in _pykakasi().convert(text))

@@ -1,5 +1,5 @@
 // 駅さがし アプリ: 検索UI + 詳細表示 + テーマ
-import { buildIndex, search } from './search.js?v=7';
+import { buildIndex, search } from './search.js?v=8';
 
 (function () {
   'use strict';
@@ -227,8 +227,8 @@ import { buildIndex, search } from './search.js?v=7';
   async function init() {
     try {
       const [stationsData, canon] = await Promise.all([
-        fetch('stations.json?v=7').then(r => r.json()),
-        fetch('canon.json?v=7').then(r => r.json()),
+        fetch('stations.json?v=8').then(r => r.json()),
+        fetch('canon.json?v=8').then(r => r.json()),
       ]);
       stations = stationsData;
       idx = buildIndex(stations, canon);
