@@ -1,5 +1,5 @@
 // 駅さがし Service Worker: アプリシェル + データを先読みキャッシュ
-const CACHE = 'eki-sagashi-v2';
+const CACHE = 'eki-sagashi-v3';
 const ASSETS = [
   './',
   './index.html',

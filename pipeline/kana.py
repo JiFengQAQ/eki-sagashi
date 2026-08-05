@@ -212,14 +212,26 @@ def kana2roma_ou(kana):
     return _kana_to_roma(kana, long_vowel=True)
 
 
-def build_kana(stations, wd=None, osm=None):
+def load_wiki_kana(path=None):
+    """Wikipedia 首句注音(wikitext首段抓取, 人工校对): 站名 -> 平假名
+    仅用于补 OSM/WD 缺口; 已清洗(剥えき/ていりゅうじょう/含・丢弃/错位重定向丢弃)"""
+    if path is None:
+        path = os.path.join(_REPO_ROOT, 'data', 'raw', 'wiki_kana.json')
+    if not os.path.exists(path):
+        return {}
+    return {k: v for k, v in json.load(open(path, encoding='utf-8')).items() if v}
+
+
+def build_kana(stations, wd=None, osm=None, wiki=None):
     """每站返回(id -> (kana, romaji, romaji_ou, en));
-    读音优先级: PREF_EXCEPTIONS > EXCEPTIONS > OSM > Wikidata; 都无则留空
+    读音优先级: PREF_EXCEPTIONS > EXCEPTIONS > OSM > Wikidata > Wikipedia注音; 都无则留空
     roma/roma_ou 由 kana 确定性转换, 不依赖汉字"""
     if wd is None:
         wd = load_wd_kana()
     if osm is None:
         osm = load_osm_kana()
+    if wiki is None:
+        wiki = load_wiki_kana()
     result = {}
     for st in stations:
         name = st['name']
@@ -236,6 +248,8 @@ def build_kana(stations, wd=None, osm=None):
                 kana = os_entry[0]
             elif norm in wd:
                 kana = wd[norm]
+            elif name in wiki:
+                kana = wiki[name]
             if os_entry:
                 en = os_entry[2]
         kana = _clean_kana(kana, name) if kana else ''

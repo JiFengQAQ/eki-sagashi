@@ -1,9 +1,9 @@
 {
  "name": "駅さがし data",
- "built_at": "2026-08-05T00:42:41+0800",
+ "built_at": "2026-08-05T07:59:21+0800",
  "station_count": 8974,
- "kana_coverage": 0.8318,
- "roma_coverage": 0.8318,
+ "kana_coverage": 0.9087,
+ "roma_coverage": 0.9087,
  "rid_coverage": 0.7983,
  "line_color_coverage": 0.8669,
  "rid_window": "2015-2019(latest available year per station)",
@@ -15,6 +15,6 @@
   "colors": "takumif/railway_colors_japan + Wikipedia 日本の鉄道ラインカラー一覧/infobox 核对",
   "kana": "人工例外 > OSM name:ja-Hira > Wikidata P1814; roma由kana确定性黑本式转换(无汉字转读)"
  },
- "sha256": "c61b8765aca801bd62b1458a0cd5b35ba667bb40fe2b426a4edc745714c0cf21",
- "bytes": 2555298
+ "sha256": "f11c4bc5cd35b6e0739824feaf8033072e2d58bf3092fff9bf6c6875f5b8d4f6",
+ "bytes": 2571323
 }
