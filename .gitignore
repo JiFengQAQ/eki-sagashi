@@ -1,2 +1,4 @@
 __pycache__/
 *.pyc
+data/raw/wiki_line_colors.html
+data/raw/wiki_line_colors.md
