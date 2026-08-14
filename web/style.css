@@ -101,6 +101,8 @@ main { max-width: 760px; width: 100%; margin: 0 auto; padding: 8px 18px 24px; fl
   min-width: 0;
 }
 #q::placeholder { color: var(--text-3); }
+/* WebKit/Blink ネイティブのクリアボタンを隠し、カスタム #clearBtn のみ表示 */
+#q::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
 
 .clear-btn {
   flex: none; width: 26px; height: 26px; border-radius: 50%;

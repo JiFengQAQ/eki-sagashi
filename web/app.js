@@ -199,8 +199,16 @@ import { buildIndex, search } from './search.js?v=9';
         openDetail(currentResults[0]);
       }
     } else if (e.key === 'Escape') {
-      qEl.value = '';
-      runSearch();
+      const modal = document.getElementById('aboutModal');
+      if (!modal.hidden) {
+        modal.hidden = true;
+      } else if (!detailEl.hidden) {
+        detailEl.hidden = true;
+        updateClearBtn();
+      } else {
+        qEl.value = '';
+        runSearch();
+      }
     }
   });
   document.addEventListener('click', (e) => {

@@ -74,22 +74,25 @@ export function normalizeQuery(input, canon) {
 
 // 构建索引: 排序键数组 + 二分
 export function buildIndex(stations, canon) {
-  const entries = []; // {k, id}
+  const entries = []; // {k, id, ex} ex=1: クエリが駅名/かな/romaの先頭完全一致
   for (let i = 0; i < stations.length; i++) {
     const st = stations[i];
-    const keys = new Set([
-      normalizeQuery(st.name, canon),
-      st.kana,
-      st.roma,
-      st.roma_ou || st.roma,
-    ]);
+    const keys = new Map(); // key -> exact(1/0)
+    const add = (raw, exact) => {
+      const k = raw && String(raw);
+      if (!k) return;
+      const prev = keys.get(k) || 0;
+      keys.set(k, Math.max(prev, exact));
+    };
+    add(normalizeQuery(st.name, canon), 1);
+    add(st.kana, 1);
+    add(st.roma, 1);
+    add(st.roma_ou || st.roma, 1);
     if (Array.isArray(st.al)) {
-      for (const a of st.al) keys.add(normalizeQuery(a, canon));
+      for (const a of st.al) add(normalizeQuery(a, canon), 0);
     }
-    if (st.en) keys.add(normalizeQuery(st.en, canon));
-    for (const k of keys) {
-      if (k) entries.push({ k, id: i });
-    }
+    if (st.en) add(normalizeQuery(st.en, canon), 0);
+    for (const [k, ex] of keys) entries.push({ k, id: i, ex });
   }
   entries.sort((a, b) => (a.k < b.k ? -1 : a.k > b.k ? 1 : 0));
   return { stations, entries, canon };
@@ -111,16 +114,24 @@ export function search(idx, query, limit) {
   const { stations, entries } = idx;
   const lo = lowerBound(entries, q);
   const ids = new Set();
+  const exactIds = new Set(); // クエリが完全一致する駅(短クエリ優先用)
+  const isShort = q.length <= 3;
   // 前缀匹配: 从 lo 开始扫到前缀不匹配
   for (let i = lo; i < entries.length; i++) {
     const e = entries[i];
     if (!e.k.startsWith(q)) break;
     ids.add(e.id);
+    if (isShort && e.ex && e.k === q) exactIds.add(e.id);
   }
   // 按 stations 顺序输出(=rid降序, 无数据站最后)
-  const result = [];
-  for (let i = 0; i < stations.length && result.length < limit; i++) {
-    if (ids.has(i)) result.push(stations[i]);
+  const exactResult = [];
+  const restResult = [];
+  for (let i = 0; i < stations.length; i++) {
+    if (!ids.has(i)) continue;
+    if (exactIds.has(i)) exactResult.push(stations[i]);
+    else restResult.push(stations[i]);
+    if (exactResult.length + restResult.length >= limit) break;
   }
-  return result;
+  // 短クエリ: 完全一致を先頭に、それ以外はrid順のまま連結
+  return isShort ? exactResult.concat(restResult).slice(0, limit) : exactResult.concat(restResult).slice(0, limit);
 }
