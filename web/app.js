@@ -259,6 +259,32 @@ import { buildIndex, search } from './search.js?v=10';
     return JSON.parse(new TextDecoder().decode(buf));
   }
 
+  // ---------- 索引構築 (Web Worker / fallback: main thread) ----------
+  function buildIndexAsync(stations, canon) {
+    return new Promise((resolve, reject) => {
+      if (!window.Worker) {
+        // Worker未対応: メインスレッドで実行
+        import('./search.js?v=10').then(({ buildIndex }) => {
+          resolve(buildIndex(stations, canon));
+        }).catch(reject);
+        return;
+      }
+      const w = new Worker('index-worker.js?v=10', { type: 'module' });
+      w.onmessage = (e) => {
+        w.terminate();
+        resolve({ stations, entries: e.data.entries, canon });
+      };
+      w.onerror = (err) => {
+        w.terminate();
+        // Worker失敗時はメインスレッドにフォールバック
+        import('./search.js?v=10').then(({ buildIndex }) => {
+          resolve(buildIndex(stations, canon));
+        }).catch(reject);
+      };
+      w.postMessage({ stations, canon });
+    });
+  }
+
   // ---------- 初期化 ----------
   async function init() {
     const loadBar = document.getElementById('loadBar');
@@ -266,12 +292,13 @@ import { buildIndex, search } from './search.js?v=10';
     try {
       loadBar.hidden = false;
       const [stationsData, canon] = await Promise.all([
-        fetchWithProgress('stations.json?v=10', p => { fill.style.width = (p * 95) + '%'; }),
+        fetchWithProgress('stations.json?v=10', p => { fill.style.width = (p * 90) + '%'; }),
         fetch('canon.json?v=10').then(r => r.json()),
       ]);
-      fill.style.width = '100%';
+      fill.style.width = '95%';
       stations = stationsData;
-      idx = buildIndex(stations, canon);
+      idx = await buildIndexAsync(stations, canon);
+      fill.style.width = '100%';
       metaLine.textContent =
         `${stations.length.toLocaleString('ja-JP')}駅 · 乗降人員データ ${stations.filter(s => s.rid && s.rid.v).length.toLocaleString('ja-JP')}駅 · 2022年9月時点の路線`;
       runSearch();
