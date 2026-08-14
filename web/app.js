@@ -69,7 +69,7 @@ import { buildIndex, search } from './search.js?v=10';
     if (!list.length) {
       const li = document.createElement('li');
       li.className = 'empty-note';
-      li.textContent = '該当する駅が見つかりません';
+      li.innerHTML = '該当する駅が見つかりません<br><span class="empty-hint">ひらがな・カタカナ・ローマ字・簡体漢字でも試してみてください</span>';
       resultsEl.appendChild(li);
       return;
     }
