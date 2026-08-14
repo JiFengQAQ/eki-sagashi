@@ -35,8 +35,8 @@ class TestBuiltData:
 
     def test_shinjuku(self):
         s = next(x for x in self.stations if x['name'] == '新宿')
-        assert s['rid']['v'] == 1578732
-        assert s['rid']['y'] == 2019
+        assert s['rid']['v'] == 1333618
+        assert s['rid']['y'] == 2024
         assert s['kana'] == 'しんじゅく'
         line_names = {l['n'] for l in s['lines']}
         assert 'JR山手線' in line_names

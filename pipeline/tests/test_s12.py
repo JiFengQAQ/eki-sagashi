@@ -53,28 +53,28 @@ class TestJoinRidership:
         r = self.rid['1130207']  # 代々木? 用名称查
         # 新宿 = 新宿 group 1130207? 实际是 1130207? 找新宿
         shinjuku = next(v for v in self.rid.values() if v['name'] == '新宿')
-        assert shinjuku['rid']['v'] == 1578732
-        assert shinjuku['rid']['y'] == 2019
+        assert shinjuku['rid']['v'] == 1333618
+        assert shinjuku['rid']['y'] == 2024
         # 运营商明细含JR
         ops = {p['op'] for p in shinjuku['per']}
         assert '東日本旅客鉄道' in ops
 
     def test_shibuya(self):
         shibuya = next(v for v in self.rid.values() if v['name'] == '渋谷')
-        assert shibuya['rid']['v'] == 1381618
-        assert shibuya['rid']['y'] == 2019
+        assert shibuya['rid']['v'] == 1770430
+        assert shibuya['rid']['y'] == 2024
 
     def test_osaka(self):
         osaka = next(v for v in self.rid.values() if v['name'] == '大阪')
-        # 大阪駅: JR西 845370(2019) vs 大阪メトロ御堂筋線 442297(2019)? 取最大
-        assert osaka['rid']['v'] == 845370
+        # 大阪駅: JR西 751006(2024) — 窗口内最新
+        assert osaka['rid']['v'] == 751006
 
     def test_tokyo_jr_central_fallback(self):
-        # 東京 JR東海: 2015-2018 均为0, 2019 有值 -> 取2019
+        # 東京 JR東海: 2024 有值 -> 取2024
         tokyo = next(v for v in self.rid.values() if v['name'] == '東京')
         jr_central = [p for p in tokyo['per'] if p['op'] == '東海旅客鉄道']
-        assert jr_central and jr_central[0]['y'] == 2019
-        assert jr_central[0]['v'] == 188476
+        assert jr_central and jr_central[0]['y'] == 2024
+        assert jr_central[0]['v'] == 194244
 
     def test_no_data_station(self):
         # 至少存在无数据站(rid.v 为 None), 且不影响其他站

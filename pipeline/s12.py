@@ -9,7 +9,8 @@ from normalize import norm_operator, norm_station_name
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _YEARS = list(range(2011, 2025))
-_WINDOW = list(range(2019, 2014, -1))  # 2019..2015 最新优先
+# 2024..2015 最新优先(疫情后数据恢复, S12-25 已含2024年度)
+_WINDOW = list(range(2024, 2014, -1))
 
 
 def _field_for_year(y):
@@ -45,9 +46,12 @@ def _load_units(zip_path=None):
             prev = u['passengers'].get(str(y))
             if prev is None or (val and val > prev):
                 u['passengers'][str(y)] = val
-        note = p.get('S12_040')  # remarks2019
-        if note:
-            u['notes']['2019'] = note
+        # 备注: 每年4字段目(2011→S12_012, ..., 2019→S12_040, 2024→S12_060)
+        for y in _YEARS:
+            note_fld = f'S12_{12 + (y - 2011) * 4:03d}'
+            note = p.get(note_fld)
+            if note:
+                u['notes'][str(y)] = note
     return units
 
 

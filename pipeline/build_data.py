@@ -96,17 +96,19 @@ def build():
         used_chars.update(st['name'])
         for l in st['lines']:
             used_chars.update(l['name'])
-    used_chars.update(st['pref'] for st in eki['stations'])
-    used_chars.update(st['muni'] for st in eki['stations'])
-    # 简体/繁体查询侧: 对每个数据字符补 s2t/t2s 变体
+        used_chars.update(st['pref'])  # 逐字
+        used_chars.update(st['muni'])  # 逐字
+    # 简体/繁体查询侧: 数据字符 + JP_MAP键 両方から変体を生成
     from normalize import _t2s
     extra = set()
-    for c in list(used_chars):
+    for c in list(used_chars) + list(JP_MAP.keys()):
         if _KANJI_RE.match(c):
             extra.add(_s2t.convert(c))
             extra.add(_t2s.convert(c))
     used_chars |= extra
-    chars = set(JP_MAP.keys()) | used_chars
+    # JP_MAP 键中映射到数据字符/变体的保留(如 涩→渋, 濱→浜→滨)
+    all_needed = used_chars | {k for k, v in JP_MAP.items() if v in used_chars}
+    chars = set(JP_MAP.keys()) | all_needed
     canon = {}
     for c in chars:
         if c in ('々', 'ヶ', 'ケ', 'ヵ'):
@@ -115,8 +117,8 @@ def build():
             canon[c] = canonical_kanji(c)
         else:
             canon[c] = c
-    # 冗長キー除去: データ+変換バリアントに実際に出現する文字のみ残す（2,324キー/31KB削減）
-    canon = {k: v for k, v in canon.items() if k in used_chars}
+    # 冗長キー除去: データ+変換バリアント+JP_MAP必要キーのみ残す
+    canon = {k: v for k, v in canon.items() if k in all_needed}
 
     stations = []
     for st in eki['stations']:
@@ -178,7 +180,7 @@ def build():
         'roma_coverage': round(roma_ok / len(stations), 4),
         'rid_coverage': round(with_val / len(stations), 4),
         'line_color_coverage': round(line_colored / line_total, 4),
-        'rid_window': '2015-2019(latest available year per station)',
+        'rid_window': '2015-2024(latest available year per station)',
         'rid_source': '国土数値情報 駅別乗降客数データ S12-25(2024年度版, CC BY 4.0)',
         'rid_note': 'JR系は乗車人員×2の推定乗降; 事業者間合算なし(公式方針); 各站取窗口内最新可用年份の最大運営者値',
         'sources': {
