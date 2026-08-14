@@ -134,7 +134,6 @@ def norm_roma_hepburn(s):
 def roma_variants(s):
     """罗马音索引变体:无长音形 + 长音转ou形(东京->tokyo/toukyou)"""
     base = norm_roma(s)
-    ou = base.replace('o', 'ou').replace('u', 'uu') if False else None
     # 正确做法:在去长音前,把ō替换为ou
     low = unicodedata.normalize('NFKC', s or '').lower()
     ou_form = low
