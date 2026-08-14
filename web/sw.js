@@ -1,5 +1,5 @@
 // 駅さがし Service Worker: アプリシェル + データを先読みキャッシュ
-const CACHE = 'eki-sagashi-vd01b9f5';
+const CACHE = 'eki-sagashi-vae3cb84';
 const ASSETS = [
   './',
   './index.html',
@@ -32,7 +32,7 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin) return;
   e.respondWith(
-    // ?v=d01b9f5 等クエリを無視してキャッシュ照合（バージョン違いによるinstall失敗を防ぐ）
+    // ?v=ae3cb84 等クエリを無視してキャッシュ照合（バージョン違いによるinstall失敗を防ぐ）
     caches.match(e.request, { ignoreSearch: true }).then((hit) => {
       if (hit) return hit;
       return fetch(e.request).then((res) => {
