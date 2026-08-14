@@ -3,6 +3,8 @@
 import hashlib
 import json
 import os
+import re
+import subprocess
 import sys
 import time
 
@@ -203,6 +205,18 @@ def build():
     for fn in ('stations.json', 'canon.json'):
         import shutil
         shutil.copy(os.path.join(DATA_DIR, fn), os.path.join(web_dir, fn))
+    # バージョン自動注入: git short hash で ?v=N を統一
+    ver = subprocess.check_output(
+        ['git', 'rev-parse', '--short', 'HEAD'],
+        cwd=REPO_ROOT, text=True).strip()
+    for fn in ('index.html', 'app.js', 'sw.js'):
+        p = os.path.join(web_dir, fn)
+        src = open(p, encoding='utf-8').read()
+        src = re.sub(r'\?v=[a-zA-Z0-9]+', f'?v={ver}', src)
+        if fn == 'sw.js':
+            src = re.sub(r"eki-sagashi-v[a-zA-Z0-9]+", f'eki-sagashi-v{ver}', src)
+        open(p, 'w', encoding='utf-8').write(src)
+    print(f'version: {ver}')
     print(f"stations: {len(stations)}  kana: {kana_ok}  roma: {roma_ok}  rid: {with_val}  "
           f"line_color: {line_colored}/{line_total}  bytes: {len(raw)}  {time.time()-t0:.1f}s")
 

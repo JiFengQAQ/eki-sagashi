@@ -1,5 +1,5 @@
 // 駅さがし アプリ: 検索UI + 詳細表示 + テーマ
-import { buildIndex, search } from './search.js?v=10';
+import { buildIndex, search } from './search.js?v=7b8be20';
 
 (function () {
   'use strict';
@@ -264,12 +264,12 @@ import { buildIndex, search } from './search.js?v=10';
     return new Promise((resolve, reject) => {
       if (!window.Worker) {
         // Worker未対応: メインスレッドで実行
-        import('./search.js?v=10').then(({ buildIndex }) => {
+        import('./search.js?v=7b8be20').then(({ buildIndex }) => {
           resolve(buildIndex(stations, canon));
         }).catch(reject);
         return;
       }
-      const w = new Worker('index-worker.js?v=10', { type: 'module' });
+      const w = new Worker('index-worker.js?v=7b8be20', { type: 'module' });
       w.onmessage = (e) => {
         w.terminate();
         resolve({ stations, entries: e.data.entries, canon });
@@ -277,7 +277,7 @@ import { buildIndex, search } from './search.js?v=10';
       w.onerror = (err) => {
         w.terminate();
         // Worker失敗時はメインスレッドにフォールバック
-        import('./search.js?v=10').then(({ buildIndex }) => {
+        import('./search.js?v=7b8be20').then(({ buildIndex }) => {
           resolve(buildIndex(stations, canon));
         }).catch(reject);
       };
@@ -292,8 +292,8 @@ import { buildIndex, search } from './search.js?v=10';
     try {
       loadBar.hidden = false;
       const [stationsData, canon] = await Promise.all([
-        fetchWithProgress('stations.json?v=10', p => { fill.style.width = (p * 90) + '%'; }),
-        fetch('canon.json?v=10').then(r => r.json()),
+        fetchWithProgress('stations.json?v=7b8be20', p => { fill.style.width = (p * 90) + '%'; }),
+        fetch('canon.json?v=7b8be20').then(r => r.json()),
       ]);
       fill.style.width = '95%';
       stations = stationsData;
