@@ -112,10 +112,17 @@ import { buildIndex, search } from './search.js?v=10';
       el.classList.toggle('active', k === i);
       el.setAttribute('aria-selected', k === i ? 'true' : 'false');
     });
+    if (i >= 0 && items[i]) {
+      qEl.setAttribute('aria-activedescendant', items[i].id);
+    } else {
+      qEl.removeAttribute('aria-activedescendant');
+    }
   }
 
   // ---------- 詳細 ----------
   function openDetail(st) {
+    resultsEl.innerHTML = '';
+    hintEl.style.display = 'none';
     let html = `<h2>${escapeHtml(st.name)}</h2>`;
     const readings = [st.kana, st.roma].filter(Boolean).join(' / ');
     html += `<p class="readings">${escapeHtml(readings)}</p>`;

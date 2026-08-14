@@ -91,21 +91,22 @@ def build():
 
     # canon.json: 站名/线路字符集 + JP_MAP键 + 简繁体两侧 的 canonical 映射(前端JS查表用)
     from normalize import JP_MAP, canonical_kanji, _KANJI_RE, _s2t
-    chars = set(JP_MAP.keys())
+    used_chars = set()
     for st in eki['stations']:
-        chars.update(st['name'])
+        used_chars.update(st['name'])
         for l in st['lines']:
-            chars.update(l['name'])
-    chars.update(st['pref'] for st in eki['stations'])
-    chars.update(st['muni'] for st in eki['stations'])
+            used_chars.update(l['name'])
+    used_chars.update(st['pref'] for st in eki['stations'])
+    used_chars.update(st['muni'] for st in eki['stations'])
     # 简体/繁体查询侧: 对每个数据字符补 s2t/t2s 变体
     from normalize import _t2s
     extra = set()
-    for c in list(chars):
+    for c in list(used_chars):
         if _KANJI_RE.match(c):
             extra.add(_s2t.convert(c))
             extra.add(_t2s.convert(c))
-    chars |= extra
+    used_chars |= extra
+    chars = set(JP_MAP.keys()) | used_chars
     canon = {}
     for c in chars:
         if c in ('々', 'ヶ', 'ケ', 'ヵ'):
@@ -114,6 +115,8 @@ def build():
             canon[c] = canonical_kanji(c)
         else:
             canon[c] = c
+    # 冗長キー除去: データ+変換バリアントに実際に出現する文字のみ残す（2,324キー/31KB削減）
+    canon = {k: v for k, v in canon.items() if k in used_chars}
 
     stations = []
     for st in eki['stations']:
