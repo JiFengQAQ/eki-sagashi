@@ -1,0 +1,2 @@
+# eki-sagashi pipeline dependencies
+opencc-python-reimplemented>=1.1  # OpenCC for simplified/traditional Chinese conversion

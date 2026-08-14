@@ -51,6 +51,16 @@ body {
   flex: none;
 }
 
+/* ---------- ローディングバー ---------- */
+.load-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 100;
+  background: transparent;
+}
+.load-bar-fill {
+  height: 100%; background: var(--accent); width: 0%;
+  transition: width .2s ease-out;
+}
+
 /* ---------- top bar ---------- */
 .topbar {
   display: flex; align-items: center; justify-content: space-between;

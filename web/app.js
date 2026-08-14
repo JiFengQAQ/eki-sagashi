@@ -1,5 +1,5 @@
 // 駅さがし アプリ: 検索UI + 詳細表示 + テーマ
-import { buildIndex, search } from './search.js?v=9';
+import { buildIndex, search } from './search.js?v=10';
 
 (function () {
   'use strict';
@@ -231,13 +231,38 @@ import { buildIndex, search } from './search.js?v=9';
     }
   });
 
+  // ---------- プログレス付きfetch ----------
+  async function fetchWithProgress(url, onProgress) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`${url}: ${res.status}`);
+    const total = +res.headers.get('content-length') || 0;
+    let loaded = 0;
+    const reader = res.body.getReader();
+    const chunks = [];
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      loaded += value.length;
+      if (total) onProgress(loaded / total);
+    }
+    const buf = new Uint8Array(loaded);
+    let offset = 0;
+    for (const c of chunks) { buf.set(c, offset); offset += c.length; }
+    return JSON.parse(new TextDecoder().decode(buf));
+  }
+
   // ---------- 初期化 ----------
   async function init() {
+    const loadBar = document.getElementById('loadBar');
+    const fill = loadBar.querySelector('.load-bar-fill');
     try {
+      loadBar.hidden = false;
       const [stationsData, canon] = await Promise.all([
-        fetch('stations.json?v=9').then(r => r.json()),
-        fetch('canon.json?v=9').then(r => r.json()),
+        fetchWithProgress('stations.json?v=10', p => { fill.style.width = (p * 95) + '%'; }),
+        fetch('canon.json?v=10').then(r => r.json()),
       ]);
+      fill.style.width = '100%';
       stations = stationsData;
       idx = buildIndex(stations, canon);
       metaLine.textContent =
@@ -246,6 +271,8 @@ import { buildIndex, search } from './search.js?v=9';
     } catch (err) {
       metaLine.textContent = 'データの読み込みに失敗しました。再読み込みしてください。';
       console.error(err);
+    } finally {
+      setTimeout(() => { loadBar.hidden = true; }, 300);
     }
   }
 

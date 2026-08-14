@@ -71,7 +71,7 @@ def build():
     color_table = build_color_table()
     attach_colors(eki['stations'], color_table, eki['line_info'])
     s12 = load_s12()
-    rid = join_ridership(s12)
+    rid = join_ridership(s12, eki)
     kana = build_kana(eki['stations'])
 
     # 英文名合并: OSM name:en > Wikidata en label; 清洗尾 Station

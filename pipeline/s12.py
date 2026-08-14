@@ -12,10 +12,6 @@ _YEARS = list(range(2011, 2025))
 _WINDOW = list(range(2019, 2014, -1))  # 2019..2015 最新优先
 
 
-def load_s12(zip_path=None):
-    return {'units': _load_units(zip_path)}
-
-
 def _field_for_year(y):
     # 2011->S12_009 ... 2024->S12_061: 每年4字段步进
     return f'S12_{9 + (y - 2011) * 4:03d}'
@@ -68,10 +64,11 @@ def _pick_window(passengers):
     return None, None
 
 
-def join_ridership(s12):
+def join_ridership(s12, eki=None):
     """ekidata每站联S12:按(站名,运营商)匹配; 每运营商取窗口值; 站级取最大;
     新干线运营商不在ekidata线路中,按唯一站名回补"""
-    eki = load_ekidata()
+    if eki is None:
+        eki = load_ekidata()
     units = s12['units']
     # 站名索引(用于新干线回补)
     name_index = {}
