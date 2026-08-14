@@ -114,24 +114,24 @@ export function search(idx, query, limit) {
   const { stations, entries } = idx;
   const lo = lowerBound(entries, q);
   const ids = new Set();
-  const exactIds = new Set(); // クエリが完全一致する駅(短クエリ優先用)
-  const isShort = q.length <= 3;
+  const exactIds = new Set(); // 字段全文精确匹配的站(优先, 与查询长度无关)
   // 前缀匹配: 从 lo 开始扫到前缀不匹配
   for (let i = lo; i < entries.length; i++) {
     const e = entries[i];
     if (!e.k.startsWith(q)) break;
     ids.add(e.id);
-    if (isShort && e.ex && e.k === q) exactIds.add(e.id);
+    if (e.ex && e.k === q) exactIds.add(e.id);
   }
-  // 按 stations 顺序输出(=rid降序, 无数据站最后)
+  // 精确匹配站全收集(数量少), rest 按 rid 顺序受 limit 限制
   const exactResult = [];
   const restResult = [];
   for (let i = 0; i < stations.length; i++) {
     if (!ids.has(i)) continue;
-    if (exactIds.has(i)) exactResult.push(stations[i]);
-    else restResult.push(stations[i]);
-    if (exactResult.length + restResult.length >= limit) break;
+    if (exactIds.has(i)) {
+      exactResult.push(stations[i]);
+    } else if (restResult.length < limit) {
+      restResult.push(stations[i]);
+    }
   }
-  // 短クエリ: 完全一致を先頭に、それ以外はrid順のまま連結
-  return isShort ? exactResult.concat(restResult).slice(0, limit) : exactResult.concat(restResult).slice(0, limit);
+  return exactResult.concat(restResult).slice(0, limit);
 }

@@ -137,6 +137,14 @@ class TestBuildKana:
         assert by_pref.get('東京都') == 'にほんばし'
         assert by_pref.get('大阪府') == 'にっぽんばし'
 
+    def test_exception_keys_are_normed(self):
+        # EXCEPTIONS 键必须等于 norm 口径(剥括号/々展开), 否则 build_kana 匹配不到
+        from kana import EXCEPTIONS
+        from normalize import canonical_kanji, norm_station_name
+        bad = [(k, canonical_kanji(norm_station_name(k))) for k in EXCEPTIONS
+               if canonical_kanji(norm_station_name(k)) != k]
+        assert bad == []
+
     def test_kagoshima_exception(self):
         st = next(s for s in self.stations if s['name'] == '鹿児島中央')
         assert self.kana[st['id']][0] == 'かごしまちゅうおう'
