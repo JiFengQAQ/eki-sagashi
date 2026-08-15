@@ -125,6 +125,14 @@ def build():
                          'rid': {'v': None, 'y': None}, 'per': []}
     if MANUAL_NEW_STATIONS:
         print(f'manual: +{len(MANUAL_NEW_STATIONS)} new stations')
+    # 改称站别名: 给旧站加新名别名(可搜索, 按都道府県限定)
+    from supplement import RENAMED_ALIASES
+    for new_name, (old_name, pref, _k) in RENAMED_ALIASES.items():
+        for st in eki['stations']:
+            if st['name'] == old_name and st.get('pref') == pref:
+                al = st.setdefault('aliases', [])
+                if new_name not in al:
+                    al.append(new_name)
 
     # 英文名合并: OSM name:en > Wikidata en label; 清洗尾 Station
     import re as _re
@@ -199,6 +207,8 @@ def build():
             per.append(item)
         rec['per'] = per
         al = list(STATION_ALIASES.get(st['name'], []))
+        if 'aliases' in st:
+            al.extend(st['aliases'])
         sys_al = systematic_aliases(st['name'], en_map.get(st['id'], ''))
         for a in sys_al:
             if a not in al:

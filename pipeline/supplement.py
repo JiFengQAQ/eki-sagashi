@@ -140,6 +140,10 @@ SUPPLEMENT_MUNI = {
 # 坐标/读音以 Wikipedia 条目为准
 # 2023-2025 年开业新站全量(2026-08-15 Wikipedia「NNNN年の鉄道」整理)
 MANUAL_NEW_STATIONS = [
+    # 2022-09-23: 西九州新幹線開業の純新站(ekidata快照2022-09-21の2日後)
+    {'id': 'manual-ureshino-onsen', 'name': '嬉野温泉', 'pref': '佐賀県', 'muni': '嬉野市', 'ward': '',
+     'lat': 33.10656, 'lon': 129.99897, 'lines': [{'name': '西九州新幹線', 'company': '九州旅客鉄道'}],
+     'kana': 'うれしのおんせん', 'opened': '2022-09-23'},
     # 2023-08-26: 宇都宮ライトレール (芳賀・宇都宮LRT)
     {'id': 'manual-utsunomiya-higashi', 'name': '宇都宮駅東口', 'pref': '栃木県', 'muni': '宇都宮市', 'ward': '',
      'lat': 36.55905, 'lon': 139.89946, 'lines': [{'name': '宇都宮ライトレール線', 'company': '宇都宮ライトレール'}],
@@ -202,15 +206,34 @@ MANUAL_NEW_STATIONS = [
     {'id': 'manual-kushida-jinja', 'name': '櫛田神社前', 'pref': '福岡県', 'muni': '福岡市', 'ward': '博多区',
      'lat': 33.59129, 'lon': 130.41153, 'lines': [{'name': '七隈線', 'company': '福岡市'}],
      'kana': 'くしだじんじゃまえ', 'opened': '2023-04-01'},
-    # 2024-03-25: 広電宮島線新站
+    # 2024-03-16: 北陸新幹線金沢-敦賀延伸の唯一純新站
+    {'id': 'manual-echizen-takefu', 'name': '越前たけふ', 'pref': '福井県', 'muni': '越前市', 'ward': '',
+     'lat': 35.89567, 'lon': 136.19889, 'lines': [{'name': '北陸新幹線', 'company': '西日本旅客鉄道'}],
+     'kana': 'えちぜんたけふ', 'opened': '2024-03-16'},
+    # 2025-08-03: 広電皆実線新站
     {'id': 'manual-matsukawamachi', 'name': '松川町', 'pref': '広島県', 'muni': '広島市', 'ward': '中区',
-     'lat': 34.39111, 'lon': 132.47127, 'lines': [{'name': '広電１号線(宇品線)', 'company': '広島電鉄'}],
-     'kana': 'まつかわまち', 'opened': '2024-03-25'},
+     'lat': 34.39022, 'lon': 132.47128, 'lines': [{'name': '広電５号線(皆実線)', 'company': '広島電鉄'}],
+     'kana': 'まつかわまち', 'opened': '2025-08-03'},
+    # 2024-11-28: 長崎電軌目覚町→スタジアムシティノース改称(旧站ekidata未収録のため新站扱い)
+    {'id': 'manual-stadium-city-north', 'name': 'スタジアムシティノース', 'pref': '長崎県', 'muni': '長崎市', 'ward': '',
+     'lat': 32.76124, 'lon': 129.86586, 'lines': [{'name': '長崎電軌１系統', 'company': '長崎電気軌道'}],
+     'kana': 'すたじあむしてぃのーす', 'opened': '2024-11-28'},
+    # 2025-01-19: Osaka Metro中央線延伸(コスモスクエア-夢洲)
+    {'id': 'manual-yumeshima', 'name': '夢洲', 'pref': '大阪府', 'muni': '大阪市', 'ward': '此花区',
+     'lat': 34.65236, 'lon': 135.38995, 'lines': [{'name': '大阪メトロ中央線', 'company': '大阪市高速電気軌道'}],
+     'kana': 'ゆめしま', 'opened': '2025-01-19'},
     # 2025-03-15: 越後線新站
     {'id': 'manual-kamitokoro', 'name': '上所', 'pref': '新潟県', 'muni': '新潟市', 'ward': '中央区',
      'lat': 37.90694, 'lon': 139.04528, 'lines': [{'name': '越後線', 'company': '東日本旅客鉄道'}],
      'kana': 'かみところ', 'opened': '2025-03-15'},
 ]
+
+
+# 改称站别名: 新站名 -> (旧站名, 都道府県, 新名读音)
+# 旧站仍在数据中(ekidata旧名), 给其加新名别名保证搜索可达
+RENAMED_ALIASES = {
+    'スタジアムシティサウス': ('宝町', '長崎県', 'すたじあむしてぃさうす'),
+}
 
 
 def _s12_geojson():
