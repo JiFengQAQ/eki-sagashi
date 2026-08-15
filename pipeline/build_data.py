@@ -74,7 +74,57 @@ def build():
     attach_colors(eki['stations'], color_table, eki['line_info'])
     s12 = load_s12()
     rid = join_ridership(s12, eki)
+    # S12补充站: ekidata缺的运行中站(新干线站/缆车站等, 见supplement.py)
+    from supplement import build_supplement
+    sup = build_supplement(eki['stations'])
+    for s in sup:
+        st = {
+            'id': s['id'],
+            'name': s['name'],
+            'pref': s['pref'],
+            'muni': s['muni'],
+            'ward': '',
+            'lat': s['lat'],
+            'lon': s['lon'],
+            'lines': [{'code': None, 'name': l['name'], 'company': l['company'], 'kana': ''}
+                      for l in s['lines_raw']],
+            '_supplement': True,
+        }
+        eki['stations'].append(st)
+        attach_colors([st], color_table, None)
+        per = [{'op': l['company'], 'op_disp': l['company'], 'line': l['name'],
+                'v': s['rid_v'], 'y': s['rid_y'], 'note': ''} for l in s['lines_raw']]
+        rid[st['id']] = {'id': st['id'], 'name': st['name'],
+                         'rid': {'v': s['rid_v'], 'y': s['rid_y']}, 'per': per}
+    if sup:
+        print(f'supplement: +{len(sup)} stations from S12')
     kana = build_kana(eki['stations'])
+    # 手动新站(2025+开业, 数据源未覆盖): 读音手动指定(不依赖OSM/WD)
+    from supplement import MANUAL_NEW_STATIONS
+    from kana import kana2roma, kana2roma_ou
+    for ms in MANUAL_NEW_STATIONS:
+        st = {
+            'id': ms['id'],
+            'name': ms['name'],
+            'pref': ms['pref'],
+            'muni': ms['muni'],
+            'ward': ms.get('ward', ''),
+            'lat': ms['lat'],
+            'lon': ms['lon'],
+            'lines': [{'code': None, 'name': l['name'], 'company': l['company'], 'kana': ''}
+                      for l in ms['lines']],
+            '_supplement': True,
+        }
+        eki['stations'].append(st)
+        attach_colors([st], color_table, None)
+        ka = ms.get('kana', '')
+        kana[st['id']] = (ka, kana2roma(ka) if ka else '',
+                          kana2roma_ou(ka) if ka else '', '')
+        # 无客流数据(开业不足一年)
+        rid[st['id']] = {'id': st['id'], 'name': st['name'],
+                         'rid': {'v': None, 'y': None}, 'per': []}
+    if MANUAL_NEW_STATIONS:
+        print(f'manual: +{len(MANUAL_NEW_STATIONS)} new stations')
 
     # 英文名合并: OSM name:en > Wikidata en label; 清洗尾 Station
     import re as _re

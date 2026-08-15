@@ -49,6 +49,8 @@ export function normalizeQuery(input, canon) {
       .replace(/[āēīōū]/g, ch => MACRON_MAP[ch])
       .replace(/[\s'\-]/g, '');
   }
+  // 中黑点剥除(ディズニーランド・ステーション 带不带・都能搜到)
+  s = s.replace(/[・･]/g, '');
   // ケ/ヵ 夹汉字间 -> ヶ (在片假名转换前处理)
   const arr0 = [...s];
   s = arr0.map((ch, i) => {

@@ -145,11 +145,11 @@ def roma_variants(s):
 
 
 def norm_station_name(s):
-    """站名归一:NFKC -> 去括号内容 -> 去尾駅 -> 去空白"""
+    """站名归一:NFKC -> 去括号内容 -> 去尾駅 -> 去空白/中黑点"""
     s = unicodedata.normalize('NFKC', s or '')
     s = re.sub(r'[（(].*?[)）]', '', s)
     s = re.sub(r'駅$', '', s)
-    s = re.sub(r'[\s　]', '', s)
+    s = re.sub(r'[\s　・･]', '', s)
     return s
 
 

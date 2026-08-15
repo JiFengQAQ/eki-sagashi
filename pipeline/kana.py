@@ -50,10 +50,10 @@ EXCEPTIONS = {
     '天王寺駅前': 'てんのうじえきまえ',
     '広電西広島': 'ひろでんにしひろしま',
     '紙屋町西': 'かみやちょうにし',
-    '三宮・花時計前': 'さんのみやはなどけいまえ',
-    '大森・金城学院前': 'おおもりきんじょうがくいんまえ',
+    '三宮花時計前': 'さんのみやはなどけいまえ',
+    '大森金城学院前': 'おおもりきんじょうがくいんまえ',
     'ナゴヤドーム前矢田': 'なごやどーむまえやだ',
-    '徳重・名古屋芸大': 'とくしげなごやげいだい',
+    '徳重名古屋芸大': 'とくしげなごやげいだい',
     '名古屋港': 'なごやこう',
 }
 
@@ -113,7 +113,7 @@ def _clean_kana(kana, st_name):
     k = norm_kana(kana)
     k = _PAREN_RE.sub('', k) if ('（' in st_name or '(' in st_name) \
         else k.replace('（', '').replace('）', '').replace('(', '').replace(')', '')
-    k = k.replace('＊', '').replace('*', '')
+    k = k.replace('＊', '').replace('*', '').replace('・', '').replace('･', '')
     if not norm_station_name(st_name).endswith('駅') and k.endswith('えき'):
         k = k[:-2]
     return k.strip()
